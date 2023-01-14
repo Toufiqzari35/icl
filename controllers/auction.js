@@ -10,11 +10,7 @@ const {
   updateStore,
 } = require('../database/localdb')
 
-const {
-  DEFAULT_BID_AMOUNT,
-  BID_INCREASE,
-  AUCTION_INTERVAL_IN_SEC,
-} = require('../constants')
+const configurations = require('../config').configurations
 
 const eventType = {
   AUCTION_INITIALIZED: 'AUCTION_INITIALIZED',
@@ -154,9 +150,9 @@ const updateAuctionState = () => {
         if (store.remainingPlayers.length > 0) {
           store.currentPlayer = {
             id: store.remainingPlayers[0],
-            bidAmount: DEFAULT_BID_AMOUNT,
+            bidAmount: configurations.DEFAULT_BID_AMOUNT,
             bids: [],
-            clock: AUCTION_INTERVAL_IN_SEC,
+            clock: configurations.AUCTION_INTERVAL_IN_SEC,
           }
           store.remainingPlayers.shift()
           store.state = 'ready'
@@ -179,9 +175,9 @@ const updateAuctionState = () => {
           store.unsoldPlayers = []
           store.currentPlayer = {
             id: store.remainingPlayers[0],
-            bidAmount: DEFAULT_BID_AMOUNT,
+            bidAmount: configurations.DEFAULT_BID_AMOUNT,
             bids: [],
-            clock: AUCTION_INTERVAL_IN_SEC,
+            clock: configurations.AUCTION_INTERVAL_IN_SEC,
           }
           store.remainingPlayers.shift()
           store.state = 'ready'
@@ -306,9 +302,9 @@ module.exports.initializeAuction = async (req, res, next) => {
     }
     store.currentPlayer = {
       id: store.remainingPlayers[0],
-      bidAmount: DEFAULT_BID_AMOUNT,
+      bidAmount: configurations.DEFAULT_BID_AMOUNT,
       bids: [],
-      clock: AUCTION_INTERVAL_IN_SEC,
+      clock: configurations.AUCTION_INTERVAL_IN_SEC,
     }
     store.remainingPlayers.shift()
     store.state = 'ready'
@@ -466,8 +462,8 @@ module.exports.postBid = (req, res, next) => {
       clearInterval(auctionTimer)
       return updateStore({
         'currentPlayer.bids': [...store.currentPlayer.bids, store.bids.length],
-        'currentPlayer.bidAmount': bidAmount + BID_INCREASE,
-        'currentPlayer.clock': AUCTION_INTERVAL_IN_SEC,
+        'currentPlayer.bidAmount': bidAmount + configurations.BID_INCREASE,
+        'currentPlayer.clock': configurations.AUCTION_INTERVAL_IN_SEC,
         bids: [
           ...store.bids,
           { playerId, teamId, amount: bidAmount, timestamp: Date.now() },

@@ -3,6 +3,7 @@ const router = require('express').Router()
 const playerController = require('../controllers/player')
 const teamController = require('../controllers/team')
 const accountController = require('../controllers/account')
+const configController = require('../controllers/config')
 
 // GET players
 router.get('/player', playerController.getAllPlayers)
@@ -27,5 +28,8 @@ router.get('/account', accountController.getAllAccounts)
 
 // GET account by ID
 router.get('/account/:accountId', accountController.getAccountById)
+
+// GET configurations
+router.get('/config', configController.getConfigurations)
 
 module.exports = router

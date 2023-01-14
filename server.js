@@ -99,6 +99,14 @@ mongoose
   })
   .then((result) => {
     console.log('mongoose client Connected!')
+    // updating global configurations
+    return require('./config')
+      .updateConfigurations()
+      .catch((err) => {
+        console.log('__error_in_updating_configurations__\n', err)
+      })
+  })
+  .then((configurations) => {
     const server = app.listen(PORT, () => {
       console.log(`server listening to port: ${PORT}`)
     })
