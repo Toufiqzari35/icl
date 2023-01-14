@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const adminController = require('../controllers/admin')
+const configController = require('../controllers/config')
 
 // POST add player
 router.post('/player/add', adminController.addPlayer)
@@ -36,5 +37,8 @@ router.post('/user/add', adminController.addUser)
 
 // PATCH reset auction data
 router.patch('/auction/reset', adminController.resetAuctionData)
+
+// POST update configurations
+router.post('/config/update', configController.updateConfigurations)
 
 module.exports = router
