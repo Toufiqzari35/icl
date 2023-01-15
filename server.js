@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 const multer = require('multer')
 const fs = require('fs')
 const path = require('path')
+const cors = require('cors')
 
 // import files
 const entityRoutes = require('./routes/entities')
@@ -38,16 +39,19 @@ const multerMiddleware = multer({
 }).single('image')
 
 // handling cors policy
-app.use('/', (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Headers', '*')
-  res.header('Access-Control-Allow-Methods', '*')
-  next()
-})
+app.use(cors())
+// app.use('/', (req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*')
+//   res.header('Access-Control-Allow-Headers', '*')
+//   res.header('Access-Control-Allow-Methods', '*')
+//   next()
+// })
 
 // middlewares
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+app.use(authMiddleware.setAuth)
+
 app.use((req, res, next) => {
   multerMiddleware(req, res, (err) => {
     if (err) {
@@ -62,7 +66,6 @@ app.use((req, res, next) => {
     next()
   })
 })
-app.use(authMiddleware.setAuth)
 
 // serve static files
 app.use(express.static(path.join(__dirname, 'frontend-build')))
@@ -70,7 +73,7 @@ app.use('/static', express.static(path.join(__dirname, 'static')))
 
 // serve routes
 app.use('/api/v1/auth', authRoutes)
-app.use('/api/v1/admin', adminRoutes)
+app.use('/api/v1/admin', authMiddleware.isAdmin, adminRoutes)
 app.use('/api/v1/auction', auctionRoutes)
 app.use('/api/v1', entityRoutes)
 
@@ -99,6 +102,14 @@ mongoose
   })
   .then((result) => {
     console.log('mongoose client Connected!')
+    // updating global configurations
+    return require('./config')
+      .updateConfigurations()
+      .catch((err) => {
+        console.log('__error_in_updating_configurations__\n', err)
+      })
+  })
+  .then((configurations) => {
     const server = app.listen(PORT, () => {
       console.log(`server listening to port: ${PORT}`)
     })
