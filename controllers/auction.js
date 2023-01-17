@@ -277,6 +277,10 @@ module.exports.initializeAuction = async (req, res, next) => {
     players = players.filter(
       (player) => !teamOwners.includes(player._id.toString())
     )
+    players.sort((p1, p2) => {
+      if (p1.gender === 'Female') return -1
+      else return 1
+    })
     if (players.length === 0) {
       return res.status(400).json({
         status: 'error',
