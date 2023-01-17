@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "http://incedocricketleague.in/static/css/main.ccf34fa1.css",
-    "main.js": "http://incedocricketleague.in/static/js/main.8b206387.js",
+    "main.js": "http://incedocricketleague.in/static/js/main.54de4a29.js",
     "static/js/787.0ba1babe.chunk.js": "http://incedocricketleague.in/static/js/787.0ba1babe.chunk.js",
     "static/media/ICL_Logo.svg": "http://incedocricketleague.in/static/media/ICL_Logo.380d96b1925cb7a510f6842d62f85aa4.svg",
     "static/media/nucleo.eot": "http://incedocricketleague.in/static/media/nucleo.bd5cce8bf40be5947637.eot",
@@ -10,11 +10,11 @@
     "static/media/nucleo.woff2": "http://incedocricketleague.in/static/media/nucleo.6dfb4833e3a0132fd1fc.woff2",
     "index.html": "http://incedocricketleague.in/index.html",
     "main.ccf34fa1.css.map": "http://incedocricketleague.in/static/css/main.ccf34fa1.css.map",
-    "main.8b206387.js.map": "http://incedocricketleague.in/static/js/main.8b206387.js.map",
+    "main.54de4a29.js.map": "http://incedocricketleague.in/static/js/main.54de4a29.js.map",
     "787.0ba1babe.chunk.js.map": "http://incedocricketleague.in/static/js/787.0ba1babe.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.ccf34fa1.css",
-    "static/js/main.8b206387.js"
+    "static/js/main.54de4a29.js"
   ]
 }
