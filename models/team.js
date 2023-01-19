@@ -29,6 +29,10 @@ const TeamSchema = Schema({
         type: Number,
         required: true,
       },
+      isPlaying: {
+        type: Boolean,
+        default: false,
+      },
       bids: [{ type: Schema.Types.ObjectId, ref: 'Bid' }],
     },
     _id: false,
