@@ -332,7 +332,7 @@ exports.deleteTeam = (req, res, next) => {
 
 exports.setTeamOwner = async (req, res, next) => {
   try {
-    const { teamId, playerId, email, password, budget } = req.body
+    const { teamId, playerId, email, password, budget, isPlaying } = req.body
     if (!teamId || !playerId || !email || !password || !budget) {
       return res.status(400).json({
         status: 'error',
@@ -393,6 +393,7 @@ exports.setTeamOwner = async (req, res, next) => {
       userId: updatedUser ? updatedUser._id : null,
       playerId: playerId,
       budget: budget,
+      isPlaying: isPlaying && isPlaying === 'true' ? true : false,
     }
     await team.save()
 
