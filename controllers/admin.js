@@ -92,6 +92,8 @@ exports.editPlayer = (req, res, next) => {
     bio,
     gender,
     rating,
+    teamId,
+    auctionStatus,
   } = req.body
   Player.findById(playerId)
     .then((player) => {
@@ -104,6 +106,9 @@ exports.editPlayer = (req, res, next) => {
       player.bio = bio
       player.gender = gender
       player.rating = rating
+      // setting auction data only if not empty
+      player.teamId = teamId ? teamId : null
+      player.auctionStatus = auctionStatus ? auctionStatus : null
       // set image if provided
       if (req.file) {
         player.imageUrl = req.file.path
