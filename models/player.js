@@ -34,6 +34,10 @@ const PlayerSchema = Schema({
   bio: {
     type: String,
   },
+  isCaptain: {
+    type: Boolean,
+    default: false,
+  },
   imageUrl: {
     type: String,
   },
