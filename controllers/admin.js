@@ -19,6 +19,7 @@ exports.addPlayer = (req, res, next) => {
     bio,
     gender,
     rating,
+    isCaptain,
   } = req.body
   // check validity of name
   if (!name) {
@@ -51,6 +52,7 @@ exports.addPlayer = (req, res, next) => {
     imageUrl,
     gender,
     rating,
+    isCaptain: isCaptain === 'true' ? true : false,
   })
 
   player
@@ -93,6 +95,7 @@ exports.editPlayer = (req, res, next) => {
     gender,
     rating,
     teamId,
+    isCaptain,
     auctionStatus,
   } = req.body
   Player.findById(playerId)
@@ -106,6 +109,7 @@ exports.editPlayer = (req, res, next) => {
       player.bio = bio
       player.gender = gender
       player.rating = rating
+      player.isCaptain = isCaptain === 'true' ? true : false
       // setting auction data only if not empty
       player.teamId = teamId ? teamId : null
       player.auctionStatus = auctionStatus ? auctionStatus : null
