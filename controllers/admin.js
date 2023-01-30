@@ -16,7 +16,7 @@ exports.addPlayer = (req, res, next) => {
     email,
     skill,
     level,
-    bio,
+    phoneNumber,
     gender,
     rating,
     isCaptain,
@@ -48,7 +48,7 @@ exports.addPlayer = (req, res, next) => {
     email,
     skill,
     level,
-    bio,
+    phoneNumber,
     imageUrl,
     gender,
     rating,
@@ -91,7 +91,7 @@ exports.editPlayer = (req, res, next) => {
     email,
     skill,
     level,
-    bio,
+    phoneNumber,
     gender,
     rating,
     teamId,
@@ -106,7 +106,7 @@ exports.editPlayer = (req, res, next) => {
       player.email = email
       player.skill = skill
       player.level = level
-      player.bio = bio
+      player.phoneNumber = phoneNumber
       player.gender = gender
       player.rating = rating
       player.isCaptain = isCaptain === 'true' ? true : false

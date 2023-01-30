@@ -31,7 +31,7 @@ const PlayerSchema = Schema({
   rating: {
     type: Number,
   },
-  bio: {
+  phoneNumber: {
     type: String,
   },
   isCaptain: {
