@@ -1,6 +1,4 @@
 const path = require('path')
-const fs = require('fs')
-const csv = require('csv-parser')
 const csvtojson = require('csvtojson')
 
 const createCsvWriter = require('csv-writer').createObjectCsvWriter
