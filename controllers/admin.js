@@ -471,3 +471,9 @@ exports.resetAuctionData = async (req, res, next) => {
     next(err)
   }
 }
+
+// exports.exportPlayerData = () => {
+//   Player.find().populate('accountId teamId').lean().then(players => {
+
+//   })
+// }
