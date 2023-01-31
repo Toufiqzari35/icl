@@ -19,6 +19,7 @@ exports.addPlayer = (req, res, next) => {
     bio,
     gender,
     rating,
+    isCaptain,
   } = req.body
   // check validity of name
   if (!name) {
@@ -51,6 +52,7 @@ exports.addPlayer = (req, res, next) => {
     imageUrl,
     gender,
     rating,
+    isCaptain: isCaptain === 'true' ? true : false,
   })
 
   player
@@ -92,6 +94,9 @@ exports.editPlayer = (req, res, next) => {
     bio,
     gender,
     rating,
+    teamId,
+    isCaptain,
+    auctionStatus,
   } = req.body
   Player.findById(playerId)
     .then((player) => {
@@ -104,6 +109,10 @@ exports.editPlayer = (req, res, next) => {
       player.bio = bio
       player.gender = gender
       player.rating = rating
+      player.isCaptain = isCaptain === 'true' ? true : false
+      // setting auction data only if not empty
+      player.teamId = teamId ? teamId : null
+      player.auctionStatus = auctionStatus ? auctionStatus : null
       // set image if provided
       if (req.file) {
         player.imageUrl = req.file.path
@@ -327,7 +336,7 @@ exports.deleteTeam = (req, res, next) => {
 
 exports.setTeamOwner = async (req, res, next) => {
   try {
-    const { teamId, playerId, email, password, budget } = req.body
+    const { teamId, playerId, email, password, budget, isPlaying } = req.body
     if (!teamId || !playerId || !email || !password || !budget) {
       return res.status(400).json({
         status: 'error',
@@ -388,6 +397,7 @@ exports.setTeamOwner = async (req, res, next) => {
       userId: updatedUser ? updatedUser._id : null,
       playerId: playerId,
       budget: budget,
+      isPlaying: isPlaying && isPlaying === 'true' ? true : false,
     }
     await team.save()
 
