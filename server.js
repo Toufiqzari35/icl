@@ -27,8 +27,20 @@ const multerStorage = multer.diskStorage({
     )
   },
   destination: (req, file, cb) => {
-    fs.mkdirSync('static/images', { recursive: true })
-    cb(null, './static/images')
+    switch (file.fieldname) {
+      case 'image':
+        fs.mkdirSync('static/images', { recursive: true })
+        cb(null, './static/images')
+        break
+      case 'csv':
+        fs.mkdirSync('static/csv', { recursive: true })
+        cb(null, './static/csv')
+        break
+      default:
+        fs.mkdirSync('static/others', { recursive: true })
+        cb(null, './static/others')
+        break
+    }
   },
 })
 const multerMiddleware = multer({
@@ -36,7 +48,10 @@ const multerMiddleware = multer({
   limits: {
     fileSize: (process.env.MAX_IMAGE_SIZE_IN_MB || 4) * 1024 * 1024,
   },
-}).single('image')
+}).fields([
+  { name: 'image', maxCount: 1 },
+  { name: 'csv', maxCount: 1 },
+])
 
 // handling cors policy
 app.use(cors())
