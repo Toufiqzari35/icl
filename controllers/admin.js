@@ -8,7 +8,6 @@ const User = require('../models/user')
 const Bid = require('../models/bid')
 
 exports.addPlayer = (req, res, next) => {
-  console.log('-----body', req.body)
   const {
     name,
     accountId,
@@ -37,8 +36,8 @@ exports.addPlayer = (req, res, next) => {
   }
   // set imageurl if image is uploaded
   let imageUrl
-  if (req.file) {
-    imageUrl = req.file.path
+  if (req.files?.image) {
+    imageUrl = req.files.image[0].path
   }
   // create player object
   const player = new Player({
@@ -114,8 +113,8 @@ exports.editPlayer = (req, res, next) => {
       player.teamId = teamId ? teamId : null
       player.auctionStatus = auctionStatus ? auctionStatus : null
       // set image if provided
-      if (req.file) {
-        player.imageUrl = req.file.path
+      if (req.files?.image) {
+        player.imageUrl = req.files.image[0].path
       }
       return player.save()
     })
@@ -240,16 +239,14 @@ exports.deleteAccount = (req, res, next) => {
 }
 
 exports.addTeam = (req, res, next) => {
-  console.log('-----body', req.body)
-  console.log('----file: ', req.file)
   const { name, accountId } = req.body
   if (!name)
     return res.status(400).json({ status: 'error', msg: 'Insufficient data' })
 
   // else add the team
   let imageUrl
-  if (req.file) {
-    imageUrl = req.file.path
+  if (req.files?.image) {
+    imageUrl = req.files.image[0].path
   }
   const team = new Team({
     name,
@@ -276,8 +273,8 @@ exports.editTeam = (req, res, next) => {
     .then((team) => {
       team.name = name
       team.accountId = accountId
-      if (req.file) {
-        team.imageUrl = req.file.path
+      if (req.files?.image) {
+        team.imageUrl = req.files.image[0].path
       }
       return team.save()
     })
