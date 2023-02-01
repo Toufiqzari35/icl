@@ -4,6 +4,7 @@ const playerController = require('../controllers/player')
 const teamController = require('../controllers/team')
 const accountController = require('../controllers/account')
 const configController = require('../controllers/config')
+const fixtureController = require('../controllers/fixture')
 
 // GET players
 router.get('/player', playerController.getAllPlayers)
@@ -31,5 +32,20 @@ router.get('/account/:accountId', accountController.getAccountById)
 
 // GET configurations
 router.get('/config', configController.getConfigurations)
+
+// get player data csv
+router.get('/playerdata', playerController.downloadPlayerDataCsv)
+
+// get fixture
+router.get('/fixture', fixtureController.getAllFixtures)
+
+// get fixture csv
+router.get('/fixture/csv', fixtureController.getFixturesCsv)
+
+// post fixtures
+router.post('/fixture/upload', fixtureController.postFixturesFromCsv)
+
+// edit fixture
+router.post('/fixture/edit', fixtureController.postEditFixture)
 
 module.exports = router
