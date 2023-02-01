@@ -43,10 +43,10 @@ exports.getFixturesCsv = (req, res, next) => {
       const header = [
         { id: 'match', title: 'match' },
         { id: 'round', title: 'round' },
-        { id: 'ground', title: 'match' },
+        { id: 'ground', title: 'ground' },
         { id: 'date', title: 'date' },
-        { id: 'time', title: 'match' },
-        { id: 'teamA', title: 'match' },
+        { id: 'time', title: 'time' },
+        { id: 'teamA', title: 'teamA' },
         { id: 'teamB', title: 'teamB' },
         { id: 'result', title: 'result' },
       ]
@@ -56,6 +56,7 @@ exports.getFixturesCsv = (req, res, next) => {
           round: fixture.round ? fixture.round : '',
           ground: fixture.ground ? fixture.ground : '',
           date: fixture.date ? fixture.date : '',
+          time: fixture.time ? fixture.time : '',
           teamA: fixture.teamA ? fixture.teamA?.name : '',
           teamB: fixture.teamB ? fixture.teamB?.name : '',
           result: fixture.result ? fixture.result?.name : '',
