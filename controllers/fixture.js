@@ -41,8 +41,8 @@ exports.getFixturesCsv = (req, res, next) => {
     .lean()
     .then((fixtures) => {
       const header = [
-        { id: 'match', title: 'match' },
         { id: 'round', title: 'round' },
+        { id: 'match', title: 'match' },
         { id: 'ground', title: 'ground' },
         { id: 'date', title: 'date' },
         { id: 'time', title: 'time' },
@@ -52,8 +52,8 @@ exports.getFixturesCsv = (req, res, next) => {
       ]
       const data = fixtures.map((fixture) => {
         return {
-          match: fixture.match ? fixture.match : '',
           round: fixture.round ? fixture.round : '',
+          match: fixture.match ? fixture.match : '',
           ground: fixture.ground ? fixture.ground : '',
           date: fixture.date ? fixture.date : '',
           time: fixture.time ? fixture.time : '',
