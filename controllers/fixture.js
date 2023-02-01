@@ -78,6 +78,13 @@ exports.getFixturesCsv = (req, res, next) => {
 }
 
 exports.postFixturesFromCsv = (req, res, next) => {
+  if (!req.files || !req.files.csv || req.files.csv.length <= 0) {
+    return res.status(400).json({
+      status: 'error',
+      msg: 'csv file not provided',
+    })
+  }
+
   const filePath = req.files?.csv[0].path
   csvtojson()
     .fromFile(filePath)
