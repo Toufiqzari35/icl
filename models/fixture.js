@@ -2,8 +2,12 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const FixtureSchema = Schema({
-  round: {
+  index: {
     type: Number,
+    required: true,
+  },
+  round: {
+    type: String,
   },
   match: {
     type: Number,
@@ -11,21 +15,26 @@ const FixtureSchema = Schema({
   ground: {
     type: String,
   },
-  teamA: {
-    type: Schema.Types.ObjectId,
-    ref: 'Team',
-  },
-  teamB: {
-    type: Schema.Types.ObjectId,
-    ref: 'Team',
-  },
   date: {
     type: String,
   },
   time: {
     type: String,
   },
+  teamA: {
+    type: String,
+  },
+  teamB: {
+    type: String,
+  },
   result: {
+    type: String,
+  },
+  teamAData: {
+    type: Schema.Types.ObjectId,
+    ref: 'Team',
+  },
+  teamBData: {
     type: Schema.Types.ObjectId,
     ref: 'Team',
   },
