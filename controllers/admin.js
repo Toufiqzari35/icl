@@ -172,7 +172,7 @@ exports.deletePlayer = (req, res, next) => {
 }
 
 exports.addAccount = (req, res, next) => {
-  const { name, totalCount } = req.body
+  const { name, totalCount, location } = req.body
   if (!name)
     return res.status(400).json({
       status: 'error',
@@ -181,6 +181,7 @@ exports.addAccount = (req, res, next) => {
   const account = new Account({
     name,
     totalCount,
+    location: location ? location : '',
   })
   account
     .save()
@@ -197,11 +198,12 @@ exports.addAccount = (req, res, next) => {
 }
 
 exports.editAccount = (req, res, next) => {
-  const { accountId, name, totalCount } = req.body
+  const { accountId, name, totalCount, location } = req.body
   Account.findById(accountId)
     .then((account) => {
       account.name = name
       account.totalCount = totalCount
+      account.location = location ? location : ''
       return account.save()
     })
     .then((account) => {

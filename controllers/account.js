@@ -1,8 +1,11 @@
+const account = require('../models/account')
 const Account = require('../models/account')
 const Player = require('../models/player')
 
 exports.getAllAccounts = (req, res, next) => {
-  Promise.all([Account.find().lean(), Player.find().lean()]).then(
+  const { location } = req.query
+  const accountOptions = location ? { location: location } : {}
+  Promise.all([Account.find(accountOptions).lean(), Player.find().lean()]).then(
     ([accounts, players]) => {
       const accountsData = accounts.map((account) => {
         const accountId = account._id.toString()
@@ -42,4 +45,20 @@ exports.getAccountById = (req, res, next) => {
       })
     })
   }
+}
+
+exports.getLocations = (req, res, next) => {
+  Account.find()
+    .lean()
+    .then((accounts) => {
+      const locations = new Set()
+      accounts.forEach((account) => locations.add(account.location))
+      console.log('locations', locations)
+      return res.status(200).json({
+        status: 'ok',
+        msg: 'locations fetched',
+        locations: Array.from(locations),
+      })
+    })
+    .catch((err) => next(err))
 }

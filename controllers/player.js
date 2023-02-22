@@ -3,10 +3,16 @@ const createCsvWriter = require('csv-writer').createObjectCsvWriter
 const Player = require('../models/player')
 
 exports.getAllPlayers = (req, res, next) => {
+  const { location } = req.query
   Player.find()
     .populate('accountId teamId lastBid')
     .lean()
     .then((players) => {
+      if (location) {
+        players = players.filter(
+          (player) => player?.accountId?.location === location
+        )
+      }
       return res.json({
         status: 'ok',
         msg: 'players fetched successfully',

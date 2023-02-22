@@ -45,4 +45,7 @@ router.get('/fixture/csv', fixtureController.getFixturesCsv)
 // post fixtures
 router.post('/fixture/upload', fixtureController.postFixturesFromCsv)
 
+// get locations
+router.get('/location', accountController.getLocations)
+
 module.exports = router

@@ -13,6 +13,10 @@ const AccountSchema = Schema({
     type: Boolean,
     default: false,
   },
+  location: {
+    type: String,
+    default: 'default',
+  },
 })
 
 module.exports = mongoose.model('Account', AccountSchema)
