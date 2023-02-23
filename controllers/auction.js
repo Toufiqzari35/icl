@@ -31,17 +31,14 @@ const eventType = {
 //   remainingPlayers : [<playerId>]
 //   unsoldPlayers: [<playerId>]
 //   soldPlayers: [<playerId>],
-//   playerLastBid: {playerId: <bidindex>},
+//   playerLastBid: {playerId: <bidData> } // bidData: {teamId, amount, timestamp}
 //   currentPlayer: {
 //     id : <playerId>
 //     bidAmount: <currentAmount>
-//     bids : [<bidId>]
+//     bids : [<bidData>]
 //     clock: <clock>
 //   }
 //   prevPlayer: <id>
-//   bids : [
-//     {playerId : <playerId>, teamId: <teamId>, amount: <amount>, timestamp: <timestamp> }
-//   ]
 // }
 
 let auctionTimer
@@ -60,7 +57,6 @@ const STORE_INITIAL_STATE = {
   soldPlayers: [],
   playerLastBid: {},
   currentPlayer: null,
-  bids: [],
 }
 
 const refreshClients = (eventType, data) => {
@@ -70,35 +66,18 @@ const refreshClients = (eventType, data) => {
   })
 }
 
-const saveCurrentPlayer = async () => {
-  const store = await getStore()
-  // if no player then return
-  if (!store.currentPlayer) return
-  const player = await Player.findById(store.currentPlayer.id)
-  // if no player with the given id then return
-  if (!player) return
-
-  // if no bids then change auction state to unsold and return
-  if (store.currentPlayer.bids.length === 0) {
-    player.auctionStatus = 'UNSOLD'
-    await player.save()
-    return
-  }
-
-  // else assign the player to team
-  const playerBids = []
-  for (let bidIndex of store.currentPlayer.bids) {
-    playerBids.push(store.bids[bidIndex])
-  }
-  await Bid.insertMany(playerBids)
-  const lastBidIndex =
-    store.currentPlayer.bids[store.currentPlayer.bids.length - 1]
-  const lastBid = store.bids[lastBidIndex]
-  const { teamId, timestamp } = lastBid
-  player.teamId = teamId
-  player.lastBid = await Bid.findOne({ timestamp })
-  player.auctionStatus = 'SOLD'
-  await player.save()
+const updatePlayerData = async (playerId, lastBid) => {
+  const bid = new Bid({
+    playerId: playerId,
+    ...lastBid,
+  })
+  return bid.save().then((bid) => {
+    return Player.findByIdAndUpdate(playerId, {
+      lastBid: bid,
+      auctionStatus: 'SOLD',
+      teamId: lastBid.teamId,
+    })
+  })
 }
 
 const updateAuctionState = () => {
@@ -122,29 +101,33 @@ const updateAuctionState = () => {
       // clear timer and ready next player for auction
       clearInterval(auctionTimer)
 
-      // save current player in database
-      return saveCurrentPlayer().then(() => {
-        store.prevPlayer = store.currentPlayer.id
+      const saveCurrentPlayer = () => {
+        const playerId = store.currentPlayer.id
+        const lengthBids = store.currentPlayer.bids.length
         // if current player is bidded by some team then move it to sold state
-        if (store.currentPlayer.bids.length > 0) {
-          // push the player to sold
-          store.soldPlayers.push(store.currentPlayer.id)
-          const playerId = store.currentPlayer.id
-          const playerBids = store.currentPlayer.bids
-          const lastBidId = playerBids[playerBids.length - 1]
-          const lastBidData = store.bids[lastBidId]
+        if (lengthBids > 0) {
+          const lastBid = store.currentPlayer.bids[lengthBids - 1]
           // udpate the player-last-bid and budget of the corresponding team
-          store.playerLastBid[playerId] = lastBidId
-          store.budget[lastBidData.teamId] -= lastBidData.amount
+          store.playerLastBid[playerId] = lastBid
+          store.budget[lastBid.teamId] -= lastBid.amount
+          // push the player to sold
+          store.soldPlayers.push(playerId)
           // remove the player from current
-          store.currentPlayer = null
+          return updatePlayerData(playerId, lastBid)
         }
         // if no bid is made on current player then move it to unsold state
         else {
-          store.unsoldPlayers.push(store.currentPlayer.id)
-          store.currentPlayer = null
+          store.unsoldPlayers.push(playerId)
+          return new Promise((resolve) => {
+            resolve(true)
+          })
         }
+      }
 
+      // save current player in database
+      return saveCurrentPlayer().then(() => {
+        store.prevPlayer = store.currentPlayer.id
+        store.currentPlayer = null
         // initialize next player
         // if players are remaining
         if (store.remainingPlayers.length > 0) {
@@ -245,7 +228,7 @@ module.exports.initializeAuction = async (req, res, next) => {
       })
     }
     // check account exists
-    const account = Account.find(accountId)
+    const account = await Account.findById(accountId).lean()
     if (!account)
       return res.status(400).json({
         status: 'error',
@@ -448,14 +431,12 @@ module.exports.postBid = (req, res, next) => {
           msg: 'team does not have enough budget',
         })
       }
+
       // check if current team already bidded on the player
-      const currentPlayerLastBidId =
-        store.currentPlayer.bids[store.currentPlayer.bids.length - 1]
-      const currentPlayerLastBidTeamId =
-        currentPlayerLastBidId >= 0
-          ? store.bids[currentPlayerLastBidId].teamId
-          : null
-      if (teamId === currentPlayerLastBidTeamId) {
+      const lengthBids = store.currentPlayer.bids.length
+      const lastbidTeamId =
+        lengthBids > 0 ? store.currentPlayer.bids[lengthBids - 1].teamId : null
+      if (teamId === lastbidTeamId) {
         return res.status(400).json({
           status: 'error',
           msg: 'last bid is made by same team',
@@ -465,13 +446,12 @@ module.exports.postBid = (req, res, next) => {
       // else create bid in the auctionState and reinitialize timer
       clearInterval(auctionTimer)
       return updateStore({
-        'currentPlayer.bids': [...store.currentPlayer.bids, store.bids.length],
+        'currentPlayer.bids': [
+          ...store.currentPlayer.bids,
+          { teamId, amount: bidAmount, timestamp: Date.now() },
+        ],
         'currentPlayer.bidAmount': bidAmount + configurations.BID_INCREASE,
         'currentPlayer.clock': configurations.AUCTION_INTERVAL_IN_SEC,
-        bids: [
-          ...store.bids,
-          { playerId, teamId, amount: bidAmount, timestamp: Date.now() },
-        ],
       }).then((store) => {
         setAuctionInterval()
         // updating clients
