@@ -1,6 +1,10 @@
 // import modules
+const path = require('path')
 const bcryptjs = require('bcryptjs')
+const csvtojson = require('csvtojson')
+const createCsvWriter = require('csv-writer').createObjectCsvWriter
 
+const fileUtils = require('../utils/file')
 const Player = require('../models/player')
 const Account = require('../models/account')
 const Team = require('../models/team')
@@ -168,6 +172,202 @@ exports.deletePlayer = (req, res, next) => {
     })
     .catch((err) => {
       next(err)
+    })
+}
+
+exports.postImportPlayersFromCsv = async (req, res, next) => {
+  if (!req.files || !req.files.csv || req.files.csv.length <= 0) {
+    return res.status(400).json({
+      status: 'error',
+      msg: 'csv file not provided',
+    })
+  }
+  try {
+    const { location } = req.body
+    const accounts = (await Account.find({ location: location }).lean()).map(
+      (account) => account._id.toString()
+    )
+
+    if (accounts.length == 0) {
+      return res.status(400).json({
+        status: 'error',
+        msg: 'No account with given location',
+      })
+    }
+
+    if (req.files?.zip?.length > 0) {
+      const zipPath = req.files.zip[0].path
+      const extractedPath = path.join(
+        __dirname,
+        '..',
+        'static',
+        'extracted-images'
+      )
+      const destinationPath = path.join(__dirname, '..', 'static', 'images')
+      fileUtils.extractZipAndCompress(zipPath, extractedPath, destinationPath)
+    }
+
+    const csvPath = req.files?.csv[0].path
+    const data = await csvtojson().fromFile(csvPath)
+    await Player.deleteMany({ accountId: { $in: accounts } })
+    const errors = []
+
+    for (let i = 0; i < data.length; i++) {
+      const row = data[i]
+      let {
+        name,
+        email,
+        account,
+        skill,
+        level,
+        rating,
+        gender,
+        phoneNumber,
+        image,
+      } = row
+
+      try {
+        rating = parseInt(rating)
+      } catch {
+        errors.push({ msg: 'rating is not integer', row: row })
+        continue
+      }
+
+      if (!account) {
+        errors.push({ msg: 'account not provided', row })
+        continue
+      }
+
+      if (!name) {
+        errors.push({ msg: 'name not provided', row })
+        continue
+      }
+
+      if (!['Male', 'Female'].includes(gender)) {
+        errors.push({ msg: 'gender is invalid (should be Male/Female)', row })
+      }
+
+      if (!['Bowler', 'Batsman', 'All Rounder'].includes(skill)) {
+        errors.push({
+          msg: 'skill is invalid (should be Bowler/Batsman/All Rounder)',
+          row,
+        })
+      }
+
+      const accountData = await Account.findOne({
+        name: account,
+      })
+
+      if (!accountData) {
+        errors.push({ msg: 'account does not exist', row, accountData })
+        continue
+      }
+
+      let imageUrl
+      const splits = image.split('/')
+      const filename = splits.length > 0 ? splits[splits.length - 1] : null
+      if (filename) {
+        imageUrl = 'static/images/' + decodeURI(filename)
+      }
+
+      try {
+        const player = new Player({
+          name,
+          email,
+          accountId: accountData._id.toString(),
+          gender,
+          skill,
+          level,
+          rating,
+          phoneNumber,
+          imageUrl,
+          auctionStatus: null,
+        })
+        await player.save()
+      } catch (err) {
+        errors.push({ msg: 'error while adding to database', row })
+      }
+    }
+
+    if (errors?.length > 0) {
+      return res.status(400).json({
+        status: 'error',
+        msg: 'there are errors while adding some players',
+        errors,
+      })
+    } else {
+      return res.status(200).json({
+        status: 'ok',
+        msg: 'all players imported',
+      })
+    }
+  } catch (err) {
+    console.log('err', err)
+    return res.status(500).json({
+      status: 'error',
+      msg: err.message,
+    })
+  }
+}
+
+exports.exportPlayersInCsv = async (req, res, next) => {
+  const filePath = path.join(__dirname, '../', 'static', 'players.csv')
+
+  const { location } = req.query
+  Account.find({ location })
+    .lean()
+    .then((accounts) => {
+      const accountIds = accounts.map((account) => account._id.toString())
+      Player.find({ accountId: { $in: accountIds } })
+        .populate('teamId accountId')
+        .lean()
+        .then((players) => {
+          const header = [
+            { id: 'email', title: 'email' },
+            { id: 'name', title: 'name' },
+            { id: 'account', title: 'account' },
+            { id: 'skill', title: 'skill' },
+            { id: 'level', title: 'level' },
+            { id: 'rating', title: 'rating' },
+            { id: 'gender', title: 'gender' },
+            { id: 'phoneNumber', title: 'phoneNumber' },
+            { id: 'team', title: 'team' },
+            { id: 'isCaptain', title: 'isCaptain' },
+            { id: 'auctionStatus', title: 'auctionStatus' },
+          ]
+          const data = players.map((player) => {
+            return {
+              name: player.name ? player.name : '',
+              email: player.email ? player.email : '',
+              gender: player.gender ? player.gender : '',
+              phoneNumber: player.phoneNumber ? player.phoneNumber : '',
+              account: player.accountId ? player.accountId.name : '',
+              team: player.teamId ? player.teamId.name : '',
+              isCaptain: player.isCaptain ? 'YES' : '',
+              auctionStatus: player.auctionStatus ? player.auctionStatus : '',
+              skill: player.skill ? player.skill : '',
+              level: player.level ? player.level : '',
+              rating: player.rating ? player.rating : '',
+            }
+          })
+
+          const csvWriter = createCsvWriter({
+            path: filePath,
+            header: header,
+          })
+          return csvWriter.writeRecords(data)
+        })
+        .then(() => {
+          res.setHeader('Content-Type', 'text/csv')
+          res.setHeader(
+            'Content-Disposition',
+            'attachment; filename="players.csv"'
+          )
+          res.download(filePath)
+        })
+        .catch((err) => {
+          next(err)
+        })
     })
 }
 
@@ -470,9 +670,3 @@ exports.resetAuctionData = async (req, res, next) => {
     next(err)
   }
 }
-
-// exports.exportPlayerData = () => {
-//   Player.find().populate('accountId teamId').lean().then(players => {
-
-//   })
-// }

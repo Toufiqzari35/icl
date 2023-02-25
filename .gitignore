@@ -120,7 +120,9 @@ dist
 # static files
 /static
 data
-playerData.csv
+
+# log
+log
 
 # localdb
 localstore.db

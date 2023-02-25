@@ -33,9 +33,6 @@ router.get('/account/:accountId', accountController.getAccountById)
 // GET configurations
 router.get('/config', configController.getConfigurations)
 
-// get player data csv
-router.get('/playerdata', playerController.downloadPlayerDataCsv)
-
 // get fixture
 router.get('/fixture', fixtureController.getAllFixtures)
 
