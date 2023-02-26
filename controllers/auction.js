@@ -260,16 +260,21 @@ module.exports.initializeAuction = async (req, res, next) => {
     players = players.filter(
       (player) => !teamOwners.includes(player._id.toString())
     )
-    players.sort((p1, p2) => {
-      if (p1.gender === 'Female') return -1
-      else return 1
-    })
+
     if (players.length === 0) {
       return res.status(400).json({
         status: 'error',
         msg: 'No player is present for auction for given account',
       })
     }
+
+    // sorting players by female first then highest rated first
+    players.sort((p1, p2) => {
+      if (p1.gender === 'Female' && p2.gender === 'Male') return -1
+      else if (p1.gender === p2.gender && p1.rating > p2.rating) return -1
+      else return 1
+    })
+
     // check state of auction should be null or undefined
     let store = await getStore()
     if (store.state) {
