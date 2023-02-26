@@ -446,10 +446,15 @@ exports.deleteAccount = (req, res, next) => {
           msg: 'account not found',
         })
       }
-      return res.status(200).json({
-        status: 'ok',
-        msg: 'account deleted',
-        account: account,
+      return Promise.all([
+        Player.deleteMany({ accountId: account._id }),
+        Team.deleteMany({ accountId: account._id }),
+      ]).then(() => {
+        return res.status(200).json({
+          status: 'ok',
+          msg: 'account deleted',
+          account: account,
+        })
       })
     })
     .catch((err) => {
