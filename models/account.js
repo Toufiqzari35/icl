@@ -17,6 +17,9 @@ const AccountSchema = Schema({
     type: String,
     default: 'default',
   },
+  imageUrl: {
+    type: String,
+  },
 })
 
 module.exports = mongoose.model('Account', AccountSchema)

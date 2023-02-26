@@ -379,10 +379,17 @@ exports.addAccount = (req, res, next) => {
       status: 'error',
       msg: 'Insufficient data',
     })
+
+  let imageUrl
+  if (req.files?.image) {
+    imageUrl = req.files.image[0].path
+  }
+
   const account = new Account({
     name,
     totalCount,
     location,
+    imageUrl,
   })
   account
     .save()
@@ -411,6 +418,9 @@ exports.editAccount = (req, res, next) => {
       account.name = name
       account.totalCount = totalCount
       account.location = location
+      if (req.files?.image) {
+        account.imageUrl = req.files.image[0].path
+      }
       return account.save()
     })
     .then((account) => {
@@ -462,6 +472,7 @@ exports.addTeam = (req, res, next) => {
     accountId,
     imageUrl,
   })
+
   team
     .save()
     .then((team) => {
