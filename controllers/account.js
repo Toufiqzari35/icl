@@ -53,7 +53,6 @@ exports.getLocations = (req, res, next) => {
     .then((accounts) => {
       const locations = new Set()
       accounts.forEach((account) => locations.add(account.location))
-      console.log('locations', locations)
       return res.status(200).json({
         status: 'ok',
         msg: 'locations fetched',

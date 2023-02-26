@@ -256,10 +256,11 @@ exports.postImportPlayersFromCsv = async (req, res, next) => {
 
       const accountData = await Account.findOne({
         name: account,
+        _id: { $in: accounts },
       })
 
       if (!accountData) {
-        errors.push({ msg: 'account does not exist', row, accountData })
+        errors.push({ msg: 'account does not exist for given location', row })
         continue
       }
 
@@ -373,7 +374,7 @@ exports.exportPlayersInCsv = async (req, res, next) => {
 
 exports.addAccount = (req, res, next) => {
   const { name, totalCount, location } = req.body
-  if (!name)
+  if (!name || !location)
     return res.status(400).json({
       status: 'error',
       msg: 'Insufficient data',
@@ -381,7 +382,7 @@ exports.addAccount = (req, res, next) => {
   const account = new Account({
     name,
     totalCount,
-    location: location ? location : '',
+    location,
   })
   account
     .save()
@@ -399,11 +400,17 @@ exports.addAccount = (req, res, next) => {
 
 exports.editAccount = (req, res, next) => {
   const { accountId, name, totalCount, location } = req.body
+  if (!name || !location) {
+    return res.status(400).json({
+      status: 'error',
+      msg: 'Insufficient data',
+    })
+  }
   Account.findById(accountId)
     .then((account) => {
       account.name = name
       account.totalCount = totalCount
-      account.location = location ? location : ''
+      account.location = location
       return account.save()
     })
     .then((account) => {
