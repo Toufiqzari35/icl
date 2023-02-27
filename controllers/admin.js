@@ -85,7 +85,6 @@ exports.addPlayer = (req, res, next) => {
 }
 
 exports.editPlayer = (req, res, next) => {
-  console.log('-----------body', req.body)
   const {
     playerId,
     name,
@@ -436,7 +435,6 @@ exports.editAccount = (req, res, next) => {
 }
 
 exports.deleteAccount = (req, res, next) => {
-  console.log('deleting account')
   const { accountId } = req.params
   Account.findByIdAndDelete(accountId)
     .then((account) => {
@@ -559,10 +557,16 @@ exports.deleteTeam = (req, res, next) => {
 exports.setTeamOwner = async (req, res, next) => {
   try {
     const { teamId, playerId, email, password, budget, isPlaying } = req.body
-    if (!teamId || !playerId || !email || !password || !budget) {
+    if (!teamId) {
       return res.status(400).json({
         status: 'error',
-        msg: 'Insufficient payload provided',
+        msg: 'TeamId not provided',
+      })
+    }
+    if (playerId && (!email || !password || !budget)) {
+      return res.status(400).json({
+        status: 'error',
+        msg: 'Insufficient data',
       })
     }
 
@@ -573,6 +577,25 @@ exports.setTeamOwner = async (req, res, next) => {
         status: 'error',
         msg: 'Team not present',
       })
+
+    // if playerId is empty then unassign teamOwner, delete user and update player
+    if (!playerId) {
+      const userId = team.teamOwner?.userId
+      const playerId = team.teamOwner?.playerId
+      const user = await User.findByIdAndDelete(userId)
+      const player = await Player.findByIdAndUpdate(playerId, {
+        auctionStatus: null,
+        teamId: null,
+      })
+      team.teamOwner = null
+      await team.save()
+      return res.status(200).json({
+        status: 'ok',
+        msg: 'Team owner removed and corresponding user deleted',
+        deletedUser: user,
+        updatedPlayer: player,
+      })
+    }
 
     // fetch player
     const player = await Player.findById(playerId)
