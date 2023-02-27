@@ -1,4 +1,5 @@
 // import modules
+const fs = require('fs')
 const path = require('path')
 const bcryptjs = require('bcryptjs')
 const csvtojson = require('csvtojson')
@@ -10,6 +11,7 @@ const Account = require('../models/account')
 const Team = require('../models/team')
 const User = require('../models/user')
 const Bid = require('../models/bid')
+const { rmSync } = require('fs')
 
 exports.addPlayer = (req, res, next) => {
   const {
@@ -194,6 +196,7 @@ exports.postImportPlayersFromCsv = async (req, res, next) => {
       })
     }
 
+    // extracting zip
     if (req.files?.zip?.length > 0) {
       const zipPath = req.files.zip[0].path
       const extractedPath = path.join(
@@ -203,14 +206,22 @@ exports.postImportPlayersFromCsv = async (req, res, next) => {
         'extracted-images'
       )
       const destinationPath = path.join(__dirname, '..', 'static', 'images')
-      fileUtils.extractZipAndCompress(zipPath, extractedPath, destinationPath)
+      await fileUtils.extractZipAndCompressImages(
+        zipPath,
+        extractedPath,
+        destinationPath
+      )
+      // removing zip for saving space
+      fs.rmSync(zipPath, { recursive: true, force: true })
     }
 
+    // parsing csv
     const csvPath = req.files?.csv[0].path
     const data = await csvtojson().fromFile(csvPath)
     await Player.deleteMany({ accountId: { $in: accounts } })
     const errors = []
 
+    // adding player from csv data
     for (let i = 0; i < data.length; i++) {
       const row = data[i]
       let {

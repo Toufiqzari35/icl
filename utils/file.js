@@ -7,7 +7,7 @@ const compressImageUtil = (src, dest) => {
   // transform the destination path in required i.e ending with '/'
   if (dest && !dest.endsWith('/')) dest += '/'
 
-  // remove destination file if exists already
+  // remove destination file of with same name if exists
   const filename = path.basename(src)
   const destinationFilePath = path.join(dest, filename)
   fs.rmSync(destinationFilePath, { force: true })
@@ -47,66 +47,56 @@ const compressImageUtil = (src, dest) => {
   })
 }
 
-const extractZipAndCompress = (zipPath, extractedPath, destinationPath) => {
-  // create source and destination folders
-  fs.mkdirSync(extractedPath, { recursive: true })
-  fs.mkdirSync(destinationPath, { recursive: true })
+const extractZipAndCompressImages = async (
+  zipPath,
+  extractedFolderPath,
+  destinationFolderPath
+) => {
+  // initializing zip object to handle extraction
+  try {
+    var zip = new StreamZip.async({
+      file: zipPath,
+      storeEntries: true,
+    })
 
-  var zip = new StreamZip({
-    file: zipPath,
-    storeEntries: true,
-  })
+    // store all etries of zip
+    const entries = await zip.entries()
 
-  // zip.on('ready', function () {
-  //   console.log('All entries read: ' + zip.entriesCount)
-  // })
+    // adding event when file is extracted
+    zip.on('extract', (entry, extractedFilePath) => {
+      const filename = path.basename(extractedFilePath)
+      const destinationFilePath = path.join(destinationFolderPath, filename)
+      compressImageUtil(extractedFilePath, destinationFolderPath)
+        .then((completed) => {
+          if (completed) fs.rmSync(extractedFilePath)
+          else throw new Error('__could_not_complete_compressing_image__')
+        })
+        .catch((err) => {
+          fs.renameSync(extractedFilePath, destinationFilePath)
+        })
+        .catch((err) => {
+          console.log('__error_while_moving_extracted_image__\n', err)
+        })
+    })
 
-  zip.on('error', function (err) {
-    console.error('__error_while_extracting_zip__', err)
-  })
+    // creating directory where files will be extracted and destination folder
+    fs.mkdirSync(extractedFolderPath, { recursive: true })
+    fs.mkdirSync(destinationFolderPath, { recursive: true })
 
-  zip.on('entry', function (entry) {
-    if ('/' === entry.name[entry.name.length - 1]) {
-      // console.log('[DIR]', entry.name)
-      return
+    // extracting each entry to extracted path
+    for (let entry of Object.values(entries)) {
+      // do not extract directories
+      if (entry.isDirectory) continue
+
+      // else extract the file
+      await zip.extract(entry.name, extractedFolderPath)
     }
 
-    // console.log('[FILE]', entry.name)
-    zip.stream(entry.name, function (err, stream) {
-      if (err) {
-        console.error('__error_while_streaming_zip__', err)
-        return
-      }
-
-      stream.on('error', function (err) {
-        console.log('__error_on_streaming_zip__', err)
-        return
-      })
-
-      // extract the image file from zip and write to extractedPath
-      const extractedFilePath = path.join(extractedPath, entry.name)
-      const extractedFileStream = fs.createWriteStream(extractedFilePath)
-      stream.pipe(extractedFileStream)
-
-      // compress the extracted file and save to destination
-      extractedFileStream.on('finish', () => {
-        compressImageUtil(extractedFilePath, destinationPath)
-          .then((result) => {
-            if (result) fs.rmSync(extractedFilePath)
-            else throw new Error('__could_not_compress_file__')
-          })
-          .catch((err) => {
-            fs.renameSync(
-              extractedFilePath,
-              path.join(destinationPath, entry.name)
-            )
-          })
-          .catch((err) => {
-            console.log('__error_while_moving_extracted_image__\n', err)
-          })
-      })
-    })
-  })
+    // closing the zip after extraction is completed
+    await zip.close()
+  } catch (err) {
+    console.log('__error_while_extracting_zip__\n', err)
+  }
 }
 
-module.exports = { compressImageUtil, extractZipAndCompress }
+module.exports = { compressImageUtil, extractZipAndCompressImages }
