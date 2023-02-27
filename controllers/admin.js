@@ -705,13 +705,33 @@ exports.addUser = (req, res, next) => {
 
 exports.resetAuctionData = async (req, res, next) => {
   try {
+    const { accountId } = req.body
+    if (!accountId) {
+      return res.status(400).json({
+        status: 'error',
+        msg: 'accountId not provided',
+      })
+    }
+    const account = await Account.findById(accountId)
+    if (!account) {
+      return res.status(400).json({
+        status: 'error',
+        msg: 'account does not exist',
+      })
+    }
+    account.isAuctioned = false
+    await account.save()
     await Player.updateMany(
-      { auctionStatus: { $ne: 'OWNER' } },
+      { accountId, auctionStatus: { $ne: 'OWNER' } },
       { teamId: null, lastBid: null, auctionStatus: null }
     )
-    await Account.updateMany({}, { isAuctioned: false })
-    await Bid.deleteMany({})
-    return res.status(200).json({ status: 'ok', msg: 'reset completed' })
+    const teams = await Team.find({ accountId }).lean()
+    const teamIds = teams.map((team) => team._id.toString())
+    await Bid.deleteMany({ teamId: { $in: teamIds } })
+    return res.status(200).json({
+      status: 'ok',
+      msg: `auction data reset for ${account.name} completed`,
+    })
   } catch (err) {
     next(err)
   }
