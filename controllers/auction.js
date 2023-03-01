@@ -477,11 +477,34 @@ module.exports.postBid = (req, res, next) => {
 module.exports.getData = (req, res, next) => {
   getStore()
     .then((store) => {
-      return res.status(200).json({
-        status: 'ok',
-        msg: 'data fetched successfully',
-        data: store,
-      })
+      const { accountId } = store
+      if (!accountId) {
+        return res.status(200).json({
+          status: 'ok',
+          msg: 'data fetched successfully',
+          data: store,
+          account: null,
+          players: [],
+          teams: [],
+        })
+      } else {
+        return Promise.all([
+          Account.findById(accountId),
+          Team.find({ accountId }).populate(
+            'teamOwner.playerId teamOwner.userId'
+          ),
+          Player.find({ accountId }),
+        ]).then(([account, teams, players]) => {
+          return res.status(200).json({
+            status: 'ok',
+            msg: 'data fetched successfully',
+            data: store,
+            account,
+            players,
+            teams,
+          })
+        })
+      }
     })
     .catch((err) => {
       next(err)
