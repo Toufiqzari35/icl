@@ -5,6 +5,7 @@ exports.getAllPlayers = (req, res, next) => {
   const { location } = req.query
   Player.find()
     .populate('accountId teamId lastBid')
+    .sort({ name: 'asc' })
     .lean()
     .then((players) => {
       if (location) {

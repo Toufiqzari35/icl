@@ -4,6 +4,7 @@ exports.getAllTeams = (req, res, next) => {
   const { location } = req.query
   Team.find()
     .populate('accountId teamOwner.playerId')
+    .sort({ name: 'asc' })
     .lean()
     .then((teams) => {
       if (location)
