@@ -275,7 +275,7 @@ exports.postImportPlayersFromCsv = async (req, res, next) => {
       }
 
       let imageUrl
-      const splits = image.split('/')
+      const splits = image ? image.split('/') : []
       const filename = splits.length > 0 ? splits[splits.length - 1] : null
       if (filename) {
         imageUrl = 'static/images/' + decodeURI(filename)
@@ -345,6 +345,7 @@ exports.exportPlayersInCsv = async (req, res, next) => {
             { id: 'team', title: 'team' },
             { id: 'isCaptain', title: 'isCaptain' },
             { id: 'auctionStatus', title: 'auctionStatus' },
+            { id: 'image', title: 'image' },
           ]
           const data = players.map((player) => {
             return {
@@ -359,6 +360,7 @@ exports.exportPlayersInCsv = async (req, res, next) => {
               skill: player.skill ? player.skill : '',
               level: player.level ? player.level : '',
               rating: player.rating ? player.rating : '',
+              image: player.imageUrl ? player.imageUrl : '',
             }
           })
 
