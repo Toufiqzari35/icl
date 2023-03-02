@@ -1,4 +1,5 @@
 const router = require('express').Router()
+
 const adminController = require('../controllers/admin')
 const configController = require('../controllers/config')
 
@@ -8,8 +9,14 @@ router.post('/player/add', adminController.addPlayer)
 // POST edit player
 router.post('/player/edit', adminController.editPlayer)
 
-// DELETE team
+// DELETE player
 router.delete('/player/:playerId', adminController.deletePlayer)
+
+// POST import players from csv
+router.post('/player/import', adminController.postImportPlayersFromCsv)
+
+// get export players data in csv
+router.get('/player/export', adminController.exportPlayersInCsv)
 
 // POST add team
 router.post('/team/add', adminController.addTeam)

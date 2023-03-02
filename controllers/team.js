@@ -1,10 +1,14 @@
 const Team = require('../models/team')
 
 exports.getAllTeams = (req, res, next) => {
+  const { location } = req.query
   Team.find()
     .populate('accountId teamOwner.playerId')
+    .sort({ name: 'asc' })
     .lean()
     .then((teams) => {
+      if (location)
+        teams = teams.filter((team) => team?.accountId?.location === location)
       return res.json({
         status: 'ok',
         msg: 'teams fetched successfully',

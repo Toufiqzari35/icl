@@ -33,7 +33,6 @@ const TeamSchema = Schema({
         type: Boolean,
         default: false,
       },
-      bids: [{ type: Schema.Types.ObjectId, ref: 'Bid' }],
     },
     _id: false,
   },
