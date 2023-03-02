@@ -24,20 +24,22 @@ exports.getUser = async (req, res, next) => {
           msg: 'User not found',
         })
       }
-      Team.findOne({ 'teamOwner.userId': user._id }).then((team) => {
-        // return user info
-        return res.status(200).json({
-          status: 'ok',
-          msg: 'User fetched successfully',
-          user: {
-            id: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-            teamId: team ? team._id : null,
-          },
-        })
-      })
+      // return user info with team data
+      return Team.findOne({ 'teamOwner.userId': user._id.toString() }).then(
+        (team) => {
+          return res.status(200).json({
+            status: 'ok',
+            msg: 'User fetched successfully',
+            user: {
+              id: user._id,
+              name: user.name,
+              email: user.email,
+              role: user.role,
+              teamId: team ? team._id : null,
+            },
+          })
+        }
+      )
     })
     .catch((err) => {
       next(err)
