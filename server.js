@@ -19,12 +19,21 @@ const authMiddleware = require('./middlewares/auth')
 const app = express()
 const multerStorage = multer.diskStorage({
   filename: (req, file, cb) => {
-    cb(
-      null,
-      new Date().getTime() +
-        '-' +
-        file.originalname.replace(/[^a-z0-9.]/gi, '_').toLowerCase()
-    )
+    switch (file.fieldname) {
+      case 'image':
+        cb(
+          null,
+          new Date().getTime() +
+            '-' +
+            file.originalname.replace(/[^a-z0-9.]/gi, '_').toLowerCase()
+        )
+        break
+      case 'zip':
+        cb(null, 'images.zip')
+        break
+      default:
+        cb(null, file.originalname)
+    }
   },
   destination: (req, file, cb) => {
     switch (file.fieldname) {
@@ -36,6 +45,10 @@ const multerStorage = multer.diskStorage({
         fs.mkdirSync('static/csv', { recursive: true })
         cb(null, './static/csv')
         break
+      case 'zip':
+        fs.mkdirSync('static/zip', { recursive: true })
+        cb(null, './static/zip')
+        break
       default:
         fs.mkdirSync('static/others', { recursive: true })
         cb(null, './static/others')
@@ -45,12 +58,13 @@ const multerStorage = multer.diskStorage({
 })
 const multerMiddleware = multer({
   storage: multerStorage,
-  limits: {
-    fileSize: (process.env.MAX_IMAGE_SIZE_IN_MB || 4) * 1024 * 1024,
-  },
+  // limits: {
+  //   fileSize: (process.env.MAX_IMAGE_SIZE_IN_MB || 150) * 1024 * 1024,
+  // },
 }).fields([
   { name: 'image', maxCount: 1 },
   { name: 'csv', maxCount: 1 },
+  { name: 'zip', maxCount: 1 },
 ])
 
 // handling cors policy

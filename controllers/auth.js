@@ -24,20 +24,22 @@ exports.getUser = async (req, res, next) => {
           msg: 'User not found',
         })
       }
-      Team.findOne({ 'teamOwner.userId': user._id }).then((team) => {
-        // return user info
-        return res.status(200).json({
-          status: 'ok',
-          msg: 'User fetched successfully',
-          user: {
-            id: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-            teamId: team ? team._id : null,
-          },
-        })
-      })
+      // return user info with team data
+      return Team.findOne({ 'teamOwner.userId': user._id.toString() }).then(
+        (team) => {
+          return res.status(200).json({
+            status: 'ok',
+            msg: 'User fetched successfully',
+            user: {
+              id: user._id,
+              name: user.name,
+              email: user.email,
+              role: user.role,
+              teamId: team ? team._id : null,
+            },
+          })
+        }
+      )
     })
     .catch((err) => {
       next(err)
@@ -96,44 +98,62 @@ exports.postLogin = (req, res, next) => {
     })
 }
 
-// exports.login = async (req, res, next) => {
-//   try {
-//     const errors = validationResult(req);
-//     if (!errors.isEmpty()) {
-//       return res.status(400).json({
-//         errors: errors.array(),
-//       });
-//     }
+exports.createUser = async (req, res, next) => {
+  const { email, password, name, role, SUPER_USER_PASSWORD } = req.body
+  if (!email || !password || !role) {
+    return res.status(400).json({
+      status: 'error',
+      msg: 'Insufficient payload provided [required email & password & role]',
+    })
+  }
 
-//     // Check if user exists
-//     const { email, password } = req.body;
-//     let user = await User.findOne({ email: email });
-//     if (!user) {
-//       return res.status(400).json({ errors: [{ msg: 'Invalid credentials' }] });
-//     }
+  if (SUPER_USER_PASSWORD !== process.env.SUPER_USER_PASSWORD) {
+    return res.status(401).json({
+      status: 'error',
+      msg: 'Incorrect super-user-password',
+    })
+  }
 
-//     // Match password
-//     const matched = await bcrypt.compare(password, user.password);
-//     if (!matched) {
-//       return res.status(400).json({ errors: [{ msg: 'Invalid credentials' }] });
-//     }
+  if (!['admin', 'owner', 'player', 'public'].includes(role)) {
+    return res.status(400).json({
+      status: 'error',
+      msg: 'Invalid role provided',
+    })
+  }
 
-//     // Return jwt
-//     const payload = {
-//       user: {
-//         id: user._id,
-//         email: user.email,
-//         username: user.username,
-//       },
-//     };
-//     jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 36000 }, (err, token) => {
-//       if (err) {
-//         throw err;
-//       }
-//       res.status(200).json({ token });
-//     });
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).json({ errors: [{ msg: 'Server error' }] });
-//   }
-// };
+  User.findOne({ email: email })
+    .then((user) => {
+      if (user)
+        return res.status(409).json({
+          status: 'error',
+          msg: 'Email already exists',
+        })
+      // create a new user
+      const newUser = new User({
+        email: email,
+        password: password,
+        role: role,
+        name: name,
+      })
+      return bcryptjs
+        .hash(password, 12)
+        .then((hashedPassword) => {
+          newUser.password = hashedPassword
+          return newUser.save()
+        })
+        .then((newUser) => {
+          return res.status(201).json({
+            status: 'ok',
+            msg: 'user created',
+            user: {
+              email: newUser.email,
+              role: newUser.role,
+              name,
+            },
+          })
+        })
+    })
+    .catch((err) => {
+      next(err)
+    })
+}
