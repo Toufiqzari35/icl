@@ -6,7 +6,9 @@ const Fixture = require('../models/fixture')
 const Team = require('../models/team')
 
 exports.getAllFixtures = (req, res, next) => {
-  Fixture.find()
+  const { location } = req.query || ''
+
+  Fixture.find({ location })
     .populate('teamAData teamBData')
     .then((fixtures) => {
       return res.status(200).json({
@@ -22,8 +24,10 @@ exports.getFixturesCsv = (req, res, next) => {
   res.setHeader('Content-Type', 'text/csv')
   res.setHeader('Content-Disposition', 'attachment; filename="playersData.csv"')
 
+  const { location } = req.query
+
   const filePath = path.join(__dirname, '../', 'fixtureData.csv')
-  Fixture.find()
+  Fixture.find({ location })
     .populate('teamA teamB result')
     .lean()
     .then((fixtures) => {
@@ -72,9 +76,10 @@ exports.postFixturesFromCsv = async (req, res, next) => {
     })
   }
   try {
+    const { location } = req.body
     const filePath = req.files?.csv[0].path
     const data = await csvtojson().fromFile(filePath)
-    await Fixture.deleteMany({})
+    await Fixture.deleteMany({ location })
     for (let i = 0; i < data.length; i++) {
       const row = data[i]
       let { match, round, ground, teamA, teamB, date, time, result } = row
@@ -97,8 +102,13 @@ exports.postFixturesFromCsv = async (req, res, next) => {
         result,
         teamAData: teamAData?._id,
         teamBData: teamBData?._id,
+        location,
       })
     }
+    return res.status(200).json({
+      status: 'ok',
+      msg: `fixtures updated for ${location} location`,
+    })
   } catch (err) {
     console.log('err', err)
     return res.status(500).json({
@@ -106,9 +116,4 @@ exports.postFixturesFromCsv = async (req, res, next) => {
       msg: err.message,
     })
   }
-
-  return res.status(200).json({
-    status: 'ok',
-    msg: 'fixtures updated',
-  })
 }

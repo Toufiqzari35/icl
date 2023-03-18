@@ -2,6 +2,7 @@ const router = require('express').Router()
 
 const adminController = require('../controllers/admin')
 const configController = require('../controllers/config')
+const fixtureController = require('../controllers/fixture')
 
 // POST add player
 router.post('/player/add', adminController.addPlayer)
@@ -47,5 +48,8 @@ router.patch('/auction/reset', adminController.resetAuctionData)
 
 // POST update configurations
 router.post('/config/update', configController.updateConfigurations)
+
+// post fixtures
+router.post('/fixture/upload', fixtureController.postFixturesFromCsv)
 
 module.exports = router

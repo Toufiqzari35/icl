@@ -38,6 +38,10 @@ const FixtureSchema = Schema({
     type: Schema.Types.ObjectId,
     ref: 'Team',
   },
+  location: {
+    type: String,
+    required: true,
+  },
 })
 
 module.exports = mongoose.model('Fixture', FixtureSchema)
