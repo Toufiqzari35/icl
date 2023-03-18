@@ -124,5 +124,5 @@ data
 # log
 log
 
-# localdb
-localstore.db
+# database files
+*.db
