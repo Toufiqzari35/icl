@@ -2,18 +2,31 @@ require('dotenv').config()
 // import modules
 const express = require('express')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose')
 const multer = require('multer')
 const fs = require('fs')
 const path = require('path')
 const cors = require('cors')
+const nodeCron = require('node-cron')
 
 // import files
 const entityRoutes = require('./routes/entities')
+const analyticRoutes = require('./routes/analytic')
 const auctionRoutes = require('./routes/auction')
 const adminRoutes = require('./routes/admin')
 const authRoutes = require('./routes/auth')
 const authMiddleware = require('./middlewares/auth')
+
+// import analytic model and helper functions
+const Analytic = require('./models/analytic')
+const {
+  snapshot,
+  loadLastSnapshot,
+  addDatapoint,
+  clearAnalytics,
+} = require('./database/analytic-db')
+const { updateStatistics } = require('./utils/analytic')
 
 // initialize objects
 const app = express()
@@ -79,6 +92,7 @@ app.use(cors())
 // middlewares
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+app.use(cookieParser())
 app.use(authMiddleware.setAuth)
 
 app.use((req, res, next) => {
@@ -101,6 +115,7 @@ app.use(express.static(path.join(__dirname, 'frontend-build')))
 app.use('/static', express.static(path.join(__dirname, 'static')))
 
 // serve routes
+app.use('/api/v1/analytic', analyticRoutes)
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/admin', authMiddleware.isAdmin, adminRoutes)
 app.use('/api/v1/auction', auctionRoutes)
@@ -115,6 +130,7 @@ app.get('/*', (req, res) => {
 
 // handling errors
 app.use((err, req, res, next) => {
+  console.log('__err__', err)
   return res.status(500).json({
     status: 'error',
     msg: err.message,
@@ -146,6 +162,22 @@ mongoose
     const io = require('./socket').init(server)
     io.on('connection', () => {
       console.log('Client connected!')
+    })
+
+    //loading last snapshot
+    loadLastSnapshot().catch((err) => {
+      console.log('__error_while_loading_last_snapshot__\n', err)
+    })
+    // schedule cron jobs for analytics
+    // clearing current snapshot and current day dataset at start of each day
+    nodeCron.schedule('0 0 * * *', () => {
+      clearAnalytics()
+    })
+    // updating user and view counts each hour at last min
+    nodeCron.schedule('59 * * * *', updateStatistics)
+    // adding datapoint each 5 min
+    nodeCron.schedule('*/5 * * * *', () => {
+      addDatapoint()
     })
   })
   .catch((err) => {
