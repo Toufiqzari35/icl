@@ -29,6 +29,8 @@ const {
 const { updateStatistics } = require('./utils/analytic')
 
 // initialize objects
+const FRONTEND_BUILD_PATH = path.join(__dirname, 'frontend', 'build')
+
 const app = express()
 const multerStorage = multer.diskStorage({
   filename: (req, file, cb) => {
@@ -111,7 +113,7 @@ app.use((req, res, next) => {
 })
 
 // serve static files
-app.use(express.static(path.join(__dirname, 'frontend-build')))
+app.use(express.static(FRONTEND_BUILD_PATH))
 app.use('/static', express.static(path.join(__dirname, 'static')))
 
 // serve routes
@@ -123,9 +125,7 @@ app.use('/api/v1', entityRoutes)
 
 // serving frontend
 app.get('/*', (req, res) => {
-  return res
-    .status(200)
-    .sendFile(path.join(__dirname, 'frontend-build/index.html'))
+  return res.status(200).sendFile(path.join(FRONTEND_BUILD_PATH, 'index.html'))
 })
 
 // handling errors

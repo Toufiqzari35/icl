@@ -1,0 +1,9 @@
+.login-section {
+  display: flex;
+  justify-content: center;
+}
+
+.login-form {
+  display: flex;
+  align-self: center;
+}

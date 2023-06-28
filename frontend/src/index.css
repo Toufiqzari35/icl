@@ -1,0 +1,79 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+#root {
+  min-height: 100%;
+  position: relative;
+}
+
+.main__content {
+  padding-bottom: 50px;
+  text-align: center;
+}
+
+.footer {
+  position: absolute !important;
+  bottom: 0;
+  height: 50px;
+  width: 100%;
+}
+
+.footer {
+  text-align: center;
+  background-color: #006a56;
+  color: white;
+  padding: 24px 0px !important;
+}
+
+.content {
+  margin-top: 10px;
+}
+
+.MuiAppBar-root {
+  background: #006a56 !important;
+}
+
+.overflow {
+  overflow: auto !important;
+}
+
+button:focus {
+  outline: none !important;
+}
+
+.botton-margin {
+  margin-bottom: 0px !important;
+}
+
+.minheight {
+  min-height: auto !important;
+}
+
+.string_text {
+  font-size: 35px;
+  color: aliceblue;
+  text-transform: uppercase;
+}
+.searchbox {
+  margin-bottom: 15px;
+  border-radius: 15px;
+  padding: 8px;
+  width: inherit;
+}
