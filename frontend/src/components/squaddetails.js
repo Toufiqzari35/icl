@@ -115,7 +115,7 @@ const Squaddetail = () => {
                     justifyContent: 'center',
                   }}
                 >
-                  <div>
+                  {/* <div>
                     <p>SKILL</p>
                     <Button
                       className="btn-primary"
@@ -123,14 +123,14 @@ const Squaddetail = () => {
                     >
                       {player.skill}
                     </Button>
-                  </div>
+                  </div> */}
                   <div>
-                    <p>RATING</p>
+                    {/* <p>RATING</p> */}
                     <Button
                       className="btn-success"
                       style={{ textTransform: 'uppercase' }}
                     >
-                      {player.rating}
+                      RATING: {player.rating}
                     </Button>
                   </div>
                 </div>

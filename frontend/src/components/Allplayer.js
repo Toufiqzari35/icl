@@ -77,7 +77,7 @@ const Allplayer = () => {
               marginLeft: '20%',
             }}
           >
-            ICL PLAYERS
+            IBL PLAYERS
           </h1>
         </Col>
 
@@ -209,7 +209,7 @@ const Allplayer = () => {
                     justifyContent: 'center',
                   }}
                 >
-                  <div>
+                  {/* <div>
                     <p>SKILL</p>
                     <Button
                       className="btn-primary"
@@ -217,14 +217,14 @@ const Allplayer = () => {
                     >
                       {player.skill}
                     </Button>
-                  </div>
+                  </div> */}
                   <div>
-                    <p>RATING</p>
+                    {/* <p>RATING</p> */}
                     <Button
                       className="btn-success"
                       style={{ textTransform: 'uppercase' }}
                     >
-                      {player.rating}
+                      RATING: {player.rating}
                     </Button>
                   </div>
                 </div>

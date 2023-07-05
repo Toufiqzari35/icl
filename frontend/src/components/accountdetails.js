@@ -76,20 +76,20 @@ const Accountdetail = (props) => {
     let batsmanCount = 0
     let bowlerCount = 0
     let allrounderCount = 0
-    teamPlayers.forEach((player) => {
-      if (!player.skill) return
-      switch (player.skill.toLowerCase()) {
-        case 'batsman':
-          batsmanCount++
-          break
-        case 'bowler':
-          batsmanCount++
-          break
-        case 'all rounder':
-          allrounderCount++
-          break
-      }
-    })
+    // teamPlayers.forEach((player) => {
+      // if (!player.skill) return
+    //   switch (player.skill.toLowerCase()) {
+    //     case 'batsman':
+    //       batsmanCount++
+    //       break
+    //     case 'bowler':
+    //       batsmanCount++
+    //       break
+    //     case 'all rounder':
+    //       allrounderCount++
+    //       break
+    //   }
+    // })
     teamStats.push({
       id: teamId,
       name: team.name,
@@ -196,7 +196,7 @@ const Accountdetail = (props) => {
                               <CardText className="playerCount">
                                 {team.totalCount}
                               </CardText>
-                              <div className="pointSection">
+                              {/* <div className="pointSection">
                                 <div className="point-div">
                                   <div className="pointText">Batsman</div>
                                   <div className="pointCircle">
@@ -215,7 +215,7 @@ const Accountdetail = (props) => {
                                     {team.allrounderCount}
                                   </div>
                                 </div>
-                              </div>
+                              </div> */}
                               <Link to={`/squaddetail/${team.id}`}>
                                 <Button>Team Details</Button>
                               </Link>
@@ -248,9 +248,9 @@ const Accountdetail = (props) => {
                         <th onClick={() => sorting('gender')}>
                           <SortIcon></SortIcon>Gender
                         </th>
-                        <th onClick={() => sorting('skill')}>
+                        {/* <th onClick={() => sorting('skill')}>
                           <SortIcon></SortIcon>Skill
-                        </th>
+                        </th> */}
                         <th onClick={() => sorting('rating')}>
                           <SortIcon></SortIcon>Rating
                         </th>
@@ -293,7 +293,7 @@ const Accountdetail = (props) => {
                           </td>
 
                           <td>{player.gender}</td>
-                          <td>{player.skill}</td>
+                          {/* <td>{player.skill}</td> */}
                           <td>{player.rating}</td>
                           <td>{BASE_PRICE}</td>
                         </tr>
@@ -316,7 +316,7 @@ const Accountdetail = (props) => {
                           <th>Player Name</th>
                           <th>Team</th>
                           <th>Gender</th>
-                          <th>Skill</th>
+                          {/* <th>Skill</th> */}
                           <th>Rating</th>
                           <th>Sold at</th>
                         </tr>
@@ -361,7 +361,7 @@ const Accountdetail = (props) => {
                             </td>
                             <td>{player.gender}</td>
 
-                            <td>{player.skill}</td>
+                            {/* <td>{player.skill}</td> */}
                             <td>{player.rating}</td>
                             <td>
                               {player.lastBid ? player.lastBid.amount : null}
@@ -389,7 +389,7 @@ const Accountdetail = (props) => {
                           <th>Player Name</th>
                           <th>Gender</th>
 
-                          <th>Skill</th>
+                          {/* <th>Skill</th> */}
                           <th>Rating</th>
                         </tr>
                       </thead>
@@ -428,7 +428,7 @@ const Accountdetail = (props) => {
                             <td>{player.name}</td>
                             <td>{player.gender}</td>
 
-                            <td>{player.skill}</td>
+                            {/* <td>{player.skill}</td> */}
                             <td>{player.rating}</td>
                           </tr>
                         ))
@@ -453,7 +453,7 @@ const Accountdetail = (props) => {
                           <th>Player Name</th>
                           <th>Team</th>
                           <th>Gender</th>
-                          <th>Skill</th>
+                          {/* <th>Skill</th> */}
                           <th>Rating</th>
                           <th>Sold At</th>
                         </tr>
@@ -493,7 +493,7 @@ const Accountdetail = (props) => {
                             <td>{player.name}</td>
                             <td>{player.teamId && player.teamId.name}</td>
                             <td>{player.gender}</td>
-                            <td>{player.skill}</td>
+                            {/* <td>{player.skill}</td> */}
                             <td>{player.rating}</td>
                             <td>{player.lastBid && player.lastBid.amount}</td>
                           </tr>
