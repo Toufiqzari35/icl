@@ -137,7 +137,7 @@ app.use((err, req, res, next) => {
   })
 })
 
-const PORT = process.env.PORT || 8000
+const PORT = process.env.PORT || 8000;
 // connect mongoose client then listen to PORT
 mongoose.set('strictQuery', true)
 mongoose
