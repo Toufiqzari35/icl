@@ -249,7 +249,7 @@ export default function ManageEntities() {
             data={data}
             accounts={accounts}
             teams={teams}
-            skills={['Batsman', 'Bowler', 'All Rounder']}
+            // skills={['Batsman', 'Bowler', 'All Rounder']}
             levels={[
               'Basic',
               'Inter School',

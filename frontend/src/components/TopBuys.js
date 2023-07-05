@@ -68,7 +68,7 @@ const TopBuys = (props) => {
                           <th>Account</th>
                           <th>Team</th>
                           <th>Gender</th>
-                          <th>Skill</th>
+                          {/* <th>Skill</th> */}
                           <th>Rating</th>
                           <th>Sold At</th>
                         </tr>
@@ -109,7 +109,7 @@ const TopBuys = (props) => {
                             <td>{player.accountId && player.accountId.name}</td>
                             <td>{player.teamId && player.teamId.name}</td>
                             <td>{player.gender}</td>
-                            <td>{player.skill}</td>
+                            {/* <td>{player.skill}</td> */}
                             <td>{player.rating}</td>
                             <td>{player.lastBid && player.lastBid.amount}</td>
                           </tr>

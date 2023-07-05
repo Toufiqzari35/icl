@@ -133,7 +133,7 @@ const Auction = () => {
         ? {
             name: currPlayer.name,
             rating: currPlayer.rating,
-            skill: currPlayer.skill,
+            // skill: currPlayer.skill,
             level: currPlayer.level,
             image: currPlayer.imageUrl,
           }
@@ -152,7 +152,7 @@ const Auction = () => {
         ? {
             name: prevPlayer.name,
             rating: prevPlayer.rating,
-            skill: prevPlayer.skill,
+            // skill: prevPlayer.skill,
             level: prevPlayer.level,
             image: prevPlayer.imageUrl,
             status: prevPlayerLastBid ? 'sold' : 'unsold',
@@ -218,20 +218,20 @@ const Auction = () => {
         })
         previousAuctions.reverse()
 
-        if (player.skill) {
-          switch (player.skill.toLowerCase()) {
-            case 'batsman':
-              teamStats[bid.teamId].batsman += 1
-              break
-            case 'bowler':
-              teamStats[bid.teamId].bowlers += 1
-              break
-            case 'all rounder':
-              teamStats[bid.teamId].allRounders += 1
-              break
-            default:
-          }
-        }
+        // if (player.skill) {
+        //   switch (player.skill.toLowerCase()) {
+        //     case 'batsman':
+        //       teamStats[bid.teamId].batsman += 1
+        //       break
+        //     case 'bowler':
+        //       teamStats[bid.teamId].bowlers += 1
+        //       break
+        //     case 'all rounder':
+        //       teamStats[bid.teamId].allRounders += 1
+        //       break
+        //     default:
+        //   }
+        // }
         teamStats[bid.teamId].total += 1
         teamStats[bid.teamId].needPlayers -= 1
       }
@@ -411,7 +411,7 @@ const Auction = () => {
                     : 'NA'}
                 </Button>
                 <div>
-                  <Button
+                  {/* <Button
                     color="primary"
                     className="animation-on-hover"
                     style={{ textTransform: 'uppercase' }}
@@ -420,7 +420,7 @@ const Auction = () => {
                     {mappedData?.currentPlayer?.skill
                       ? mappedData?.currentPlayer?.skill
                       : 'NA'}
-                  </Button>
+                  </Button> */}
                   <Button
                     color="success"
                     className="animation-on-hover"
@@ -670,7 +670,7 @@ const Auction = () => {
                         <span className="rm-name">Remaining Funds</span>
                         <span className="rm-fund">{data?.budget}</span>
                       </div>
-                      <div className="pointSection">
+                      {/* <div className="pointSection">
                         <div className="point-div">
                           <div className="pointText">Batsman</div>
                           <div className="pointCircle">{data?.batsman}</div>
@@ -683,7 +683,7 @@ const Auction = () => {
                           <div className="pointText">All Rounder</div>
                           <div className="pointCircle">{data?.allRounders}</div>
                         </div>
-                      </div>
+                      </div> */}
                       <div className="team-player">
                         <ul className="mb-0 px-1">
                           <li className="m-0">

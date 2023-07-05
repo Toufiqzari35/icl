@@ -3,7 +3,7 @@ import React, { useContext, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import AuthContext from '../store/auth-context'
-import logo from './ICL_Logo.svg'
+import logo from './IBL_Logo.png'
 
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
@@ -85,10 +85,10 @@ function SignIn() {
   }
 
   return (
-    <Container className="content mainContent">
-      <Row>
-        <Col md={6}>
-          <Image src={logo}></Image>
+    <Container className="content mainContent" style={{minHeight: "calc(100vh - 188.5px)", display: "flex", alignItems: "center"}}> {/* style added to center entire login box */}
+      <Row >
+        <Col md={6} >
+          <Image style={{width: "100%", height: "auto"}} src={logo}></Image>
         </Col>
         <Col
           md={6}

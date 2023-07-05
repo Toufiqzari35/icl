@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { useNavigate, Link, NavLink } from 'react-router-dom'
 import AuthContext from '../store/auth-context'
 import EntityContext from '../store/entity-context'
-import Logo from './ICL_Logo.svg'
+import Logo from './IBL_Logo.png'
 
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
@@ -104,10 +104,12 @@ function ResponsiveAppBar() {
             >
               <Box
                 component="img"
+                // style={{display: "flex", alignItems: "center"}}
                 sx={{
                   height: 64,
                   mr: 2,
                 }}
+                style={{aspectRatio: 16 / 9, objectFit: "cover", minWidth: "124px"}}
                 alt="Logo"
                 src={Logo}
               />
@@ -228,13 +230,14 @@ function ResponsiveAppBar() {
               display: { xs: 'none', md: 'flex' },
             }}
           >
-            <Link to="/">
+            <Link to="/" style={{display: "flex", alignItems: "center"}}>
               <Box
                 component="img"
                 sx={{
                   height: 64,
                   mr: 2,
                 }}
+                style={{aspectRatio: 16 / 9, objectFit: "cover", minWidth: "124px"}}
                 alt="Logo"
                 src={Logo}
               />

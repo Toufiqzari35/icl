@@ -32,20 +32,20 @@ const TeamDetail = (props) => {
     let batsmanCount = 0
     let bowlerCount = 0
     let allrounderCount = 0
-    teamPlayers.forEach((player) => {
-      if (!player.skill) return
-      switch (player.skill.toLowerCase()) {
-        case 'batsman':
-          batsmanCount++
-          break
-        case 'bowler':
-          batsmanCount++
-          break
-        case 'all rounder':
-          allrounderCount++
-          break
-      }
-    })
+    // teamPlayers.forEach((player) => {
+    //   if (!player.skill) return
+    //   switch (player.skill.toLowerCase()) {
+    //     case 'batsman':
+    //       batsmanCount++
+    //       break
+    //     case 'bowler':
+    //       batsmanCount++
+    //       break
+    //     case 'all rounder':
+    //       allrounderCount++
+    //       break
+    //   }
+    // })
     teamStats.push({
       id: teamId,
       name: team.name,
@@ -61,7 +61,7 @@ const TeamDetail = (props) => {
     teams &&
     players && (
       <div className="content mainContent container-fluid">
-        <h1 style={{ marginTop: '30px' }}>ICL TEAMS</h1>
+        <h1 style={{ marginTop: '30px' }}>IBL TEAMS</h1>
         <div
           className="squadSection row"
           style={{
@@ -103,7 +103,7 @@ const TeamDetail = (props) => {
                   Player Count
                 </CardSubtitle>
                 <CardText className="playerCount">{team.totalCount}</CardText>
-                <div className="pointSection">
+                {/* <div className="pointSection">
                   <div className="point-div">
                     <div className="pointText">Batsman</div>
                     <div className="pointCircle">{team.batsmanCount}</div>
@@ -116,7 +116,7 @@ const TeamDetail = (props) => {
                     <div className="pointText">All Rounder</div>
                     <div className="pointCircle">{team.allrounderCount}</div>
                   </div>
-                </div>
+                </div> */}
                 <Link to={`/squaddetail/${team.id}`}>
                   <Button>Team Details</Button>
                 </Link>
