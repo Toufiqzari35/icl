@@ -1,0 +1,27 @@
+.card-div {
+  background: white;
+  border-radius: 15px;
+  padding: 12px;
+}
+
+.card-head {
+  color: #ee4923;
+  font-weight: 900;
+  text-align: center;
+}
+
+.match-rule {
+  text-align: center;
+  color: white;
+}
+.t-text {
+  /*text-transform: uppercase;*/
+  font-weight: bold;
+}
+.p-text {
+  font-weight: bold !important;
+}
+
+.div-text {
+  text-align: initial !important;
+}
