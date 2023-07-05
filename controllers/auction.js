@@ -270,10 +270,11 @@ module.exports.initializeAuction = async (req, res, next) => {
 
     // sorting players by female first then highest rated first
     players.sort((p1, p2) => {
-      if (p1.gender === 'Female' && p2.gender === 'Male') return -1
-      else if (p1.gender === p2.gender && p1.rating > p2.rating) return -1
-      else return 1
+      if (p1.gender === 'Woman' && p2.gender === 'Man') return -1
+      else if (p1.gender ==='Man' && p2.gender==='Woman') return 1
+      else return p2.rating-p1.rating
     })
+    console.log(players.map(player => player.name));
 
     // check state of auction should be null or undefined
     let store = await getStore()

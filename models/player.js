@@ -4,7 +4,9 @@ const Schema = mongoose.Schema
 const PlayerSchema = Schema({
   accountId: {
     type: Schema.Types.ObjectId,
-    required: true,
+    // required: true,
+    default: "64a3f352fcfb4d2c04d3b960",
+    // default id is the local id made in the database for account of incedo pune
     ref: 'Account',
   },
   name: {
@@ -19,12 +21,12 @@ const PlayerSchema = Schema({
   },
   gender: {
     type: String,
-    enum: ['Male', 'Female', 'Other'],
+    enum: ['Man', 'Woman', 'Other'],
   },
-  skill: {
-    type: String,
-    enum: ['Bowler', 'Spinner', 'All Rounder', 'Batsman', 'Keeper'],
-  },
+  // skill: {
+  //   type: String,
+  //   enum: ['Bowler', 'Spinner', 'All Rounder', 'Batsman', 'Keeper', 'Offensive', 'Defensive'],
+  // },
   level: {
     type: String,
   },
