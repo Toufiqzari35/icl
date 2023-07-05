@@ -9,6 +9,7 @@ const {
   getStore,
   updateStore,
 } = require('../database/localdb')
+const { async } = require('node-stream-zip')
 
 const configurations = require('../config').configurations
 
