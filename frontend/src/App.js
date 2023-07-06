@@ -45,7 +45,7 @@ const App = () => {
           <Route path="/Teams" element={<TeamDetail />} />
           <Route path="/Auction" element={<Auction />} />
           <Route path="/topbuys" element={<TopBuys />} />
-          <Route path="/rules" element={<Rules />} />
+          {/* <Route path="/rules" element={<Rules />} /> */}
           <Route path="/fixtures" element={<Fixtures />} />
           <Route path="/accountdetail/:id" element={<Accountdetail />} />
           <Route path="/squaddetail/:id" element={<Squaddetail />} />
