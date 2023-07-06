@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
 const PlayerSchema = Schema({
   accountId: {
@@ -7,7 +7,7 @@ const PlayerSchema = Schema({
     // required: true,
     default: "64a65714f28fa046cc2b45dc",
     // default id is the local id made in the database for account of incedo pune
-    ref: 'Account',
+    ref: "Account",
   },
   name: {
     type: String,
@@ -21,7 +21,7 @@ const PlayerSchema = Schema({
   },
   gender: {
     type: String,
-    enum: ['Man', 'Woman', 'Other'],
+    enum: ["Man", "Woman", "Other"],
   },
   // skill: {
   //   type: String,
@@ -46,16 +46,16 @@ const PlayerSchema = Schema({
   // initialized after auction
   teamId: {
     type: Schema.Types.ObjectId,
-    ref: 'Team',
+    ref: "Team",
   },
   lastBid: {
     type: Schema.Types.ObjectId,
-    ref: 'Bid',
+    ref: "Bid",
   },
   auctionStatus: {
     type: String,
-    enum: [null, 'SOLD', 'UNSOLD', 'OWNER'],
+    enum: [null, "SOLD", "UNSOLD", "OWNER"],
   },
-})
+});
 
-module.exports = mongoose.model('Player', PlayerSchema)
+module.exports = mongoose.model("Player", PlayerSchema);
