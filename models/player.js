@@ -6,7 +6,6 @@ const PlayerSchema = Schema({
     type: Schema.Types.ObjectId,
     // required: true,
     default: "64a65714f28fa046cc2b45dc",
-    // 64a65714f28fa046cc2b45dc- Incedo Pune account ID
     // default id is the local id made in the database for account of incedo pune
     ref: "Account",
   },
