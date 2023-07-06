@@ -100,8 +100,8 @@ const Allplayer = () => {
             }}
             onSubmit={(e) => {
               e.preventDefault()
-              console.log(e.target)
-              console.log('pulkit')
+              // console.log(e.target)
+              // console.log('pulkit')
             }}
           >
             <InputBase

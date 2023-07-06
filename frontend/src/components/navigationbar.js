@@ -174,14 +174,14 @@ function ResponsiveAppBar() {
                 </Link>
               </MenuItem>
               {/* )} */}
-              <MenuItem key="rules" onClick={handleCloseNavMenu}>
+              {/* <MenuItem key="rules" onClick={handleCloseNavMenu}>
                 <Link
                   to="/rules"
                   style={{ color: 'black', textDecoration: 'none' }}
                 >
                   Rules
                 </Link>
-              </MenuItem>
+              </MenuItem> */}
               <MenuItem key="fixtures" onClick={handleCloseNavMenu}>
                 <Link
                   to="/fixtures"
@@ -300,7 +300,7 @@ function ResponsiveAppBar() {
               </Button>
             </Link>
             {/* )} */}
-            <Link to="rules" style={{ color: 'white', textDecoration: 'none' }}>
+            {/* <Link to="rules" style={{ color: 'white', textDecoration: 'none' }}>
               <Button
                 key="rules"
                 onClick={handleCloseNavMenu}
@@ -308,7 +308,7 @@ function ResponsiveAppBar() {
               >
                 Rules
               </Button>
-            </Link>
+            </Link> */}
             <Link
               to="fixtures"
               style={{ color: 'white', textDecoration: 'none' }}

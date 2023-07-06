@@ -32,7 +32,7 @@ const Squaddetail = () => {
       <h1 style={{ marginTop: '30px', textTransform: 'uppercase' }}>
         {teamPlayers[0] && teamPlayers[0].teamId.name
           ? teamPlayers[0].teamId.name + ' SQUAD'
-          : 'ICL SQUAD'}
+          : 'IBL SQUAD'}
       </h1>
 
       <Row style={{ justifyContent: 'space-evenly' }}>
