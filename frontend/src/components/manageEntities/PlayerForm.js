@@ -11,7 +11,7 @@ const PlayerForm = (props) => {
   const employeeIdRef = useRef()
   const accountIdRef = useRef()
   const emailRef = useRef()
-  const skillRef = useRef()
+  // const skillRef = useRef()
   const levelRef = useRef()
   const phoneNumberRef = useRef()
   const imageRef = useRef()
@@ -34,7 +34,7 @@ const PlayerForm = (props) => {
     playerFormData.append('employeeId', employeeIdRef.current.value)
     playerFormData.append('accountId', accountIdRef.current.value)
     playerFormData.append('email', emailRef.current.value)
-    playerFormData.append('skill', skillRef.current.value)
+    // playerFormData.append('skill', skillRef.current.value)
     playerFormData.append('level', levelRef.current.value)
     playerFormData.append('phoneNumber', phoneNumberRef.current.value)
     playerFormData.append('image', imageRef.current.files[0])
@@ -140,7 +140,7 @@ const PlayerForm = (props) => {
           required
         />
       </div>
-      <div className={classes.input}>
+      {/* <div className={classes.input}>
         <label htmlFor="skill">Skill</label>
         <select id="skill" ref={skillRef}>
           {props.skills.map((skill) => (
@@ -155,7 +155,7 @@ const PlayerForm = (props) => {
             </option>
           ))}
         </select>
-      </div>
+      </div> */}
       <div className={classes.input}>
         <label htmlFor="level">level</label>
         <select id="level" ref={levelRef}>

@@ -130,6 +130,7 @@ export default function ManageEntities() {
   }
 
   const openEditModalHandler = (entityName, entityId) => {
+    console.log(entityName, entityId);
     const api = `${BASE_URL}/api/v1/${entityName}/${entityId}`
     axios.get(api).then((res) => {
       if (res.data.status === 'ok') {
@@ -257,7 +258,7 @@ export default function ManageEntities() {
               'District Level',
               'State Level',
             ]}
-            gender={['Male', 'Female']}
+            gender={['Man', 'Woman']}
             auctionStatusList={['OWNER', 'SOLD', 'UNSOLD']}
             onCloseOverlay={closeModalHandler}
             onRefresh={refreshAllData}
