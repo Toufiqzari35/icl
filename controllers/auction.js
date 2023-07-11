@@ -3,6 +3,7 @@ const Account = require('../models/account')
 const Team = require('../models/team')
 const Player = require('../models/player')
 const Bid = require('../models/bid')
+const Config = require("../models/config")
 
 const {
   initializeStore,
@@ -272,10 +273,9 @@ module.exports.initializeAuction = async (req, res, next) => {
     // sorting players by female first then highest rated first
     players.sort((p1, p2) => {
       if (p1.gender === 'Woman' && p2.gender === 'Man') return -1
-      else if (p1.gender ==='Man' && p2.gender==='Woman') return 1
-      else return p2.rating-p1.rating
+      else if (p1.gender === 'Man' && p2.gender === 'Woman') return 1
+      else return p2.rating - p1.rating
     })
-    console.log(players.map(player => player.name));
 
     // check state of auction should be null or undefined
     let store = await getStore()
@@ -405,7 +405,7 @@ module.exports.postBid = (req, res, next) => {
     })
   }
   getStore()
-    .then((store) => {
+    .then( async (store) => {
       // check team access to current auction
       if (!store.teams.includes(teamId)) {
         return res.status(400).json({
@@ -450,6 +450,69 @@ module.exports.postBid = (req, res, next) => {
         })
       }
 
+      // check if current team can pick anymore male and female players
+
+      const womanCount = await Player.countDocuments({ teamId: teamId, gender: 'Woman' })
+      const manCount = await Player.countDocuments({ teamId: teamId, gender: 'Man' })
+      const playerCount = await Player.countDocuments({ teamId })
+      const currentPlayer = await Player.findById(playerId)
+      const currentPlayerGender = currentPlayer.gender
+      const configData = await Config.find({})
+      const playersPerTeam = configData.find(key => key.key === 'PLAYERS_PER_TEAM').value
+      const minWomanPerTeam = configData.find(key => key.key === 'MIN_WOMAN_PER_TEAM').value
+      const minManPerTeam = configData.find(key => key.key === 'MIN_MAN_PER_TEAM').value
+      const remainingWoman = await Player.countDocuments({teamId: {$exists: false}, gender: 'Woman'})
+      const allSoldWomanData = await Player.find({teamId: {$exists: true}, gender: 'Woman'})
+      const soldWomanCountPerTeam = {}
+      const allTeam = store['teams']
+      allTeam.forEach((val, idx) => {
+        soldWomanCountPerTeam[val] = 0
+      })
+      allSoldWomanData.forEach((val, idx) => {
+        if (val.teamId in soldWomanCountPerTeam) {
+          soldWomanCountPerTeam[val.teamId] += 1
+        }
+        else {
+          soldWomanCountPerTeam[val.teamId] = 1
+        }
+      })
+      let requiredWoman = 0
+      Object.values(soldWomanCountPerTeam).forEach((val, idx) => {
+        if (val < minWomanPerTeam) {
+          requiredWoman += minWomanPerTeam - val
+        }
+      })
+
+      // console.log(playersPerTeam)
+      // console.log(minManPerTeam)
+      console.log("minimum woman Per Team: ", minWomanPerTeam)
+      console.log("Required Woman: ", requiredWoman);
+      console.log("Remaining Woman: ", remainingWoman);
+      console.log("Sold Woman Count: ", soldWomanCountPerTeam);
+
+      if (currentPlayerGender === "Man" && playersPerTeam - playerCount + womanCount <= minWomanPerTeam) {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'team cannot select anymore male players'
+        })
+      }
+
+      if (currentPlayerGender === 'Woman' && womanCount >= minWomanPerTeam && requiredWoman >= remainingWoman) {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'team cannot select anymore female players'
+        })
+
+      }
+
+      if (currentPlayerGender === "Woman" && playersPerTeam - playerCount + manCount <= minManPerTeam) {
+        console.log('team cannot select anymore female players')
+        return res.status(400).json({
+          status: 'error',
+          msg: 'team cannot select anymore female players'
+        })
+      }
+      
       // else create bid in the auctionState and reinitialize timer
       clearInterval(auctionTimer)
       return updateStore({
