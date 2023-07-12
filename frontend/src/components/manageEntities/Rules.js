@@ -534,7 +534,7 @@ export default function Rules() {
             <div className="card-div" style={{ marginTop: '20px' }}>
                 <div>
                   <div style={{ float: 'left' }}>
-                    <img src="static/rules_img/ball.png" />
+                    <img style={{ height: "auto", width: "100px" }}  src="static/rules_img/shuttercock.png" />
                   </div>
                   <div>
                     <h3 className="card-head">SERVING</h3>
@@ -583,7 +583,7 @@ export default function Rules() {
               <div className="card-div" style={{ marginTop: '20px' }}>
                 <div>
                   <div style={{ float: 'left' }}>
-                    <img src="static/rules_img/ball.png" />
+                    <img style={{ height: "auto", width: "100px" }}  src="static/rules_img/singles.png" />
                   </div>
                   <div>
                     <h3 className="card-head">STRATEGIES (SINGLES)</h3>
@@ -671,7 +671,7 @@ export default function Rules() {
               <div className="card-div" style={{ marginTop: '20px' }}>
                 <div>
                   <div style={{ float: 'left' }}>
-                    <img src="static/rules_img/ballposition.png" />
+                    <img style={{ height: "auto", width: "100px" }}  src="static/rules_img/doubles.png" />
                   </div>
                   <div>
                     <h3 className="card-head">STRATEGIES (DOUBLES)</h3>

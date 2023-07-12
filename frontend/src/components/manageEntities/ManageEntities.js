@@ -21,6 +21,7 @@ import { Button } from 'reactstrap'
 
 // constants
 const BASE_URL = process.env.REACT_APP_BASE_URL || ''
+console.log(BASE_URL)
 
 export default function ManageEntities() {
   const entityCtx = useContext(EntityContext)
