@@ -12,6 +12,8 @@ const ConfigForm = (props) => {
   const defaultBudgetRef = useRef()
   const defaultBidAmountRef = useRef()
   const playersPerTeamRef = useRef()
+  const minWomanPerTeamRef = useRef()
+  const minManPerTeamRef = useRef()
   const bidIncreaseRef = useRef()
   const auctionIntervalInSecRef = useRef()
   const yearRef = useRef()
@@ -29,6 +31,8 @@ const ConfigForm = (props) => {
       YEAR: yearRef.current.value,
       COUNTDOWN: countdownRef.current.value,
       DEFAULT_LOCATION: defaultLocationRef.current.value,
+      MIN_WOMAN_PER_TEAM: minWomanPerTeamRef.current.value,
+      MIN_MAN_PER_TEAM: minManPerTeamRef.current.value,
     }
     const config = {
       headers: {
@@ -94,6 +98,32 @@ const ConfigForm = (props) => {
           defaultValue={
             props.configurations.PLAYERS_PER_TEAM
               ? props.configurations.PLAYERS_PER_TEAM
+              : ''
+          }
+        />
+      </div>
+      <div className={classes.input}>
+        <label htmlFor="minWomanPerTeam">MIN_WOMAN_PER_TEAM</label>
+        <input
+          id="minWomanPerTeam"
+          type="number"
+          ref={minWomanPerTeamRef}
+          defaultValue={
+            props.configurations.MIN_WOMAN_PER_TEAM
+              ? props.configurations.MIN_WOMAN_PER_TEAM
+              : ''
+          }
+        />
+      </div>
+      <div className={classes.input}>
+        <label htmlFor="minManPerTeam">MIN_MAN_PER_TEAM</label>
+        <input
+          id="minManPerTeam"
+          type="number"
+          ref={minManPerTeamRef}
+          defaultValue={
+            props.configurations.MIN_MAN_PER_TEAM
+              ? props.configurations.MIN_MAN_PER_TEAM
               : ''
           }
         />

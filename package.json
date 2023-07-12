@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@react-pdf/renderer": "^3.1.12",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.1",
     "compress-images": "^2.0.5",
@@ -30,6 +31,9 @@
     "node-cron": "^3.0.2",
     "node-stream-zip": "^1.15.0",
     "pngquant-bin": "^6.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-pdf": "^7.1.2",
     "socket.io": "^4.5.4"
   },
   "devDependencies": {
