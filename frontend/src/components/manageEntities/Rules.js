@@ -86,6 +86,23 @@ export default function Rules() {
             </div>
           </div>
           <div
+            className="card-div t-text  "
+            style={{ marginTop: '10px', display: 'flex' }}
+          >
+            <img style={{ height: "75px", width: "75px", margin: "0 12px" }} src="static/rules_img/shoes.png" />
+            <div
+              className="div-text"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                marginLeft: '6px',
+              }}
+            >
+              Non-marking shoes are must for every participants.
+            </div>
+          </div>
+          <div
             className="card-div t-text"
             style={{ marginTop: '10px', display: 'flex' }}
           >
@@ -140,8 +157,7 @@ export default function Rules() {
                 marginLeft: '6px',
               }}
             >
-              Water will be available at the ground. Refreshment can be
-              purchased from the canteen at your own cost.
+              Lunch, Water, and Energy Drinks will be available at the ground.
             </div>
           </div>
           <div
@@ -359,19 +375,6 @@ export default function Rules() {
                 >
                   <img src="static/rules_img/chevron-right.svg" />
                   A side has only one ‘service’.
-                </p>
-                <p
-                  className="p-text"
-                  style={{
-                    textAlign: "left",
-                    fontSize: '14px',
-                    lineHeight: '1.42857143',
-                    color: '#1C3663',
-                    backgroundColor: '#fff',
-                  }}
-                >
-                  <img src="static/rules_img/chevron-right.svg" />
-                  The service passes consecutively to the players as shown in the diagram.
                 </p>
                 <p
                   className="p-text"
