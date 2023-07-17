@@ -27,7 +27,7 @@ exports.getAllPlayers = (req, res, next) => {
 exports.getPlayerInfo = (req, res, next) => {
   const { playerId } = req.params
   Player.findById(playerId)
-    .populate('accountId')
+    // .populate('accountId')
     .lean()
     .then((player) => {
       return res.json({

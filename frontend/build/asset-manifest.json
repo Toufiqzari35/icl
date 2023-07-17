@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.689910c3.css",
-    "main.js": "/static/js/main.e345ebd3.js",
+    "main.js": "/static/js/main.f5e8414b.js",
     "static/js/651.bc7eeb74.chunk.js": "/static/js/651.bc7eeb74.chunk.js",
     "static/media/IBL_Logo.png": "/static/media/IBL_Logo.413744c56841ea806a9b.png",
     "static/media/nucleo.eot": "/static/media/nucleo.bd5cce8bf40be5947637.eot",
@@ -10,11 +10,11 @@
     "static/media/nucleo.woff2": "/static/media/nucleo.6dfb4833e3a0132fd1fc.woff2",
     "index.html": "/index.html",
     "main.689910c3.css.map": "/static/css/main.689910c3.css.map",
-    "main.e345ebd3.js.map": "/static/js/main.e345ebd3.js.map",
+    "main.f5e8414b.js.map": "/static/js/main.f5e8414b.js.map",
     "651.bc7eeb74.chunk.js.map": "/static/js/651.bc7eeb74.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.689910c3.css",
-    "static/js/main.e345ebd3.js"
+    "static/js/main.f5e8414b.js"
   ]
 }
