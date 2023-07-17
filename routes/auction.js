@@ -5,6 +5,9 @@ const auctionController = require('../controllers/auction')
 // GET auction data
 router.get('/data', auctionController.getData)
 
+// GET owner biding availablity status
+router.get('/canBid/:teamId/:playerId', auctionController.canOwnerBid)
+
 // POST bid on player
 router.post('/bid', authMiddleware.isTeamOwner, auctionController.postBid)
 

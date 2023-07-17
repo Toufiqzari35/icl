@@ -81,6 +81,9 @@ const Auction = () => {
   const [showSnackbar, setShowSnackbar] = useState(false)
   const [showPopup, setShowPopup] = useState(false)
 
+  // status of owner bidding availablity
+  const [canOwnerBid, setCanOwnerBid] = useState(false)
+
   // details about current owner
   const currentOwnerTeamId = authCtx.user?.teamId
   const currentOwnerTeam = teams.find((team) => team._id === currentOwnerTeamId)
@@ -106,13 +109,25 @@ const Auction = () => {
         Math.max(remainingPlayers - 1, 0) * DEFAULT_BID_AMOUNT
       : Number.MAX_SAFE_INTEGER
 
+  const changeOwnerBid = (teamId, playerId) => {
+    if (teamId && playerId) {
+      axios
+      .get(BASE_URL + '/api/v1/auction/canBid/' + teamId + '/' + playerId)
+      .then(res => {
+        console.log(res?.data)
+        setCanOwnerBid(res?.data?.msg)
+      })
+    }
+  }
+
   // check if current-owner is able to bid
   const canBid =
     currentOwnerTeamId &&
     mappedData?.state === 'progress' &&
     mappedData?.lastBid?.teamId !== currentOwnerTeamId &&
     remainingPlayers > 0 &&
-    maxAllowableBid >= nextBidAmount
+    maxAllowableBid >= nextBidAmount &&
+    canOwnerBid
 
   // get a mapping of auction-data
   const updateMappedData = () => {
@@ -291,6 +306,9 @@ const Auction = () => {
   useEffect(() => {
     if (auctionData && teams?.length > 0 && players?.length > 0) {
       updateMappedData()
+      // changing bidding status of owner
+      changeOwnerBid(currentOwnerTeamId, auctionData.currentPlayer.id);
+      console.log(canOwnerBid)
     }
   }, [auctionData, teams, players])
 

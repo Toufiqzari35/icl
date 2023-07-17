@@ -403,6 +403,69 @@ module.exports.clearAuction = (req, res, next) => {
     })
 }
 
+module.exports.canOwnerBid = (req, res, next) => {
+  const { playerId, teamId } = req.params;
+  getStore()
+  .then(async (store) => {
+  const womanCount = await Player.countDocuments({ teamId: teamId, gender: 'Woman' })
+  const manCount = await Player.countDocuments({ teamId: teamId, gender: 'Man' })
+  const playerCount = await Player.countDocuments({ teamId })
+  const currentPlayer = await Player.findById(playerId)
+  const currentPlayerGender = currentPlayer.gender
+  const configData = await Config.find({})
+  const playersPerTeam = configData.find(key => key.key === 'PLAYERS_PER_TEAM').value
+  const minWomanPerTeam = configData.find(key => key.key === 'MIN_WOMAN_PER_TEAM').value
+  const minManPerTeam = configData.find(key => key.key === 'MIN_MAN_PER_TEAM').value
+  const remainingWoman = await Player.countDocuments({ teamId: { $exists: false }, gender: 'Woman' })
+  const allSoldWomanData = await Player.find({ teamId: { $exists: true }, gender: 'Woman' })
+  const soldWomanCountPerTeam = {}
+  const allTeam = store['teams']
+  allTeam.forEach((val, idx) => {
+    soldWomanCountPerTeam[val] = 0
+  })
+  allSoldWomanData.forEach((val, idx) => {
+    if (val.teamId in soldWomanCountPerTeam) {
+      soldWomanCountPerTeam[val.teamId] += 1
+    }
+    else {
+      soldWomanCountPerTeam[val.teamId] = 1
+    }
+  })
+  let requiredWoman = 0
+  Object.values(soldWomanCountPerTeam).forEach((val, idx) => {
+    if (val < minWomanPerTeam) {
+      requiredWoman += minWomanPerTeam - val
+    }
+  })
+
+  if (currentPlayerGender === "Man" && playersPerTeam - playerCount + womanCount <= minWomanPerTeam) {
+    return res.status(200).json({
+      status: 'ok',
+      msg: false
+    })
+  }
+
+  if (currentPlayerGender === 'Woman' && womanCount >= minWomanPerTeam && requiredWoman >= remainingWoman) {
+    return res.status(200).json({
+      status: 'ok',
+      msg: false
+    })
+  }
+
+  if (currentPlayerGender === "Woman" && playersPerTeam - playerCount + manCount <= minManPerTeam) {
+    return res.status(200).json({
+      status: 'ok',
+      msg: false
+    })
+  }
+
+  return res.status(200).json({
+    status: 'ok',
+    msg: true
+  })
+  })
+}
+
 module.exports.postBid = (req, res, next) => {
   const { playerId, teamId, amount } = req.body
   const bidAmount = +amount
@@ -413,7 +476,7 @@ module.exports.postBid = (req, res, next) => {
     })
   }
   getStore()
-    .then( async (store) => {
+    .then(async (store) => {
       // check team access to current auction
       if (!store.teams.includes(teamId)) {
         return res.status(400).json({
@@ -469,8 +532,8 @@ module.exports.postBid = (req, res, next) => {
       const playersPerTeam = configData.find(key => key.key === 'PLAYERS_PER_TEAM').value
       const minWomanPerTeam = configData.find(key => key.key === 'MIN_WOMAN_PER_TEAM').value
       const minManPerTeam = configData.find(key => key.key === 'MIN_MAN_PER_TEAM').value
-      const remainingWoman = await Player.countDocuments({teamId: {$exists: false}, gender: 'Woman'})
-      const allSoldWomanData = await Player.find({teamId: {$exists: true}, gender: 'Woman'})
+      const remainingWoman = await Player.countDocuments({ teamId: { $exists: false }, gender: 'Woman' })
+      const allSoldWomanData = await Player.find({ teamId: { $exists: true }, gender: 'Woman' })
       const soldWomanCountPerTeam = {}
       const allTeam = store['teams']
       allTeam.forEach((val, idx) => {
@@ -520,7 +583,7 @@ module.exports.postBid = (req, res, next) => {
           msg: 'team cannot select anymore female players'
         })
       }
-      
+
       // else create bid in the auctionState and reinitialize timer
       clearInterval(auctionTimer)
       return updateStore({
