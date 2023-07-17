@@ -82,6 +82,13 @@ const updatePlayerData = async (playerId, lastBid) => {
   })
 }
 
+const clearPlayerData = async () => {
+  return Player.updateMany(
+    {},
+    { $unset: { teamId: "", auctionStatus: "", lastBid: "" } }
+  );
+}
+
 const updateAuctionState = () => {
   getStore()
     .then((store) => {
@@ -381,6 +388,7 @@ module.exports.endAuction = (req, res, next) => {
 
 module.exports.clearAuction = (req, res, next) => {
   clearInterval(auctionTimer)
+  clearPlayerData();
   initializeStore(STORE_INITIAL_STATE)
     .then((store) => {
       refreshClients(eventType.ACCOUNT_AUCTION_CLEARED, store)
@@ -485,10 +493,10 @@ module.exports.postBid = (req, res, next) => {
 
       // console.log(playersPerTeam)
       // console.log(minManPerTeam)
-      console.log("minimum woman Per Team: ", minWomanPerTeam)
-      console.log("Required Woman: ", requiredWoman);
-      console.log("Remaining Woman: ", remainingWoman);
-      console.log("Sold Woman Count: ", soldWomanCountPerTeam);
+      // console.log("minimum woman Per Team: ", minWomanPerTeam)
+      // console.log("Required Woman: ", requiredWoman);
+      // console.log("Remaining Woman: ", remainingWoman);
+      // console.log("Sold Woman Count: ", soldWomanCountPerTeam);
 
       if (currentPlayerGender === "Man" && playersPerTeam - playerCount + womanCount <= minWomanPerTeam) {
         return res.status(400).json({
@@ -506,7 +514,7 @@ module.exports.postBid = (req, res, next) => {
       }
 
       if (currentPlayerGender === "Woman" && playersPerTeam - playerCount + manCount <= minManPerTeam) {
-        console.log('team cannot select anymore female players')
+        // console.log('team cannot select anymore female players')
         return res.status(400).json({
           status: 'error',
           msg: 'team cannot select anymore female players'
