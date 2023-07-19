@@ -20,9 +20,10 @@ const PlayerForm = (props) => {
   const teamIdRef = useRef()
   const auctionStatusRef = useRef()
   const isCaptainRef = useRef()
+  console.log(props)
 
   const accountId =
-    props.data && props.data.accountId && props.data.accountId._id
+    props.data && props.data.accountId
   const accountTeams = props.teams.filter(
     (team) => accountId && team.accountId && team.accountId._id === accountId
   )
