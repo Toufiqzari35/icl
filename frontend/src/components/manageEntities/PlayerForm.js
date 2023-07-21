@@ -27,6 +27,7 @@ const PlayerForm = (props) => {
   const accountTeams = props.teams.filter(
     (team) => accountId && team.accountId && team.accountId._id === accountId
   )
+  console.log(props)
 
   const formSubmitHandler = (e) => {
     e.preventDefault()

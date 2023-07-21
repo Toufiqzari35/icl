@@ -339,7 +339,7 @@ const Fixtures = () => {
                                 style={mobileClasses.button}
                                 size="sm"
                               >
-                                Match {match.match}
+                                Game {match.match}
                               </Button>
 
                               <Typography
@@ -505,7 +505,7 @@ const Fixtures = () => {
                               style={classes.button}
                               size="sm"
                             >
-                              Match {match.match}
+                              Game {match.match}
                             </Button>
 
                             <Typography variant="h6" style={classes.date}>
